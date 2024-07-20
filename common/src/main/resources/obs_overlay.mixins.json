@@ -1,0 +1,22 @@
+{
+  "required": true,
+  "package": "me.zziger.obsoverlay.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "minVersion": "0.8",
+  "client": [
+    "ChatHudMixin",
+    "ChatScreenMixin",
+    "DebugHudMixin",
+    "GameRendererMixin",
+    "InGameHudMixin",
+    "MinecraftClientMixin",
+    "PlayerListHudMixin",
+    "SubtitlesHudMixin",
+    "TitleScreenMixin"
+  ],
+  "mixins": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
