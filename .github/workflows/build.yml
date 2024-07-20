@@ -2,19 +2,11 @@ name: Build and Release (1.21)
 
 on:
   push:
-    paths:
-      - '**.gradle'
-      - '**.properties'
-      - '**/src/**'
-      - '.github/**'
+    tags:
+      - '*.*.*+*.*',
+      - '*.*.*+*.*.*'
     branches:
       - "1.21"
-  workflow_dispatch:
-    inputs:
-      norelease:
-        description: 'Do not publish'
-        required: true
-        default: 'false'
 
 jobs:
   build:
