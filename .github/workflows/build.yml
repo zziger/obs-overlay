@@ -44,7 +44,7 @@ jobs:
         run: echo "package_name=$mod_version - Minecraft $minecraft_version" >> $GITHUB_ENV
 
       - name: Create release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -52,12 +52,11 @@ jobs:
           name: ${{ env.package_name }}
           generate_release_notes: true
           files: |
-            **/build/libs/
-            !build/libs/
-            !**/*-dev.jar
-            !**/*-shadow.jar
-            !**/*-transformProduction*.jar
-            !**/testmod*/
+            ./**/build/libs/*.jar
+            !build/libs/*.jar
+            !./**/*-dev.jar
+            !./**/*-shadow.jar
+            !./**/*-transformProduction*.jar
 
 #      - name: Release to Maven and CurseForge
 #        uses: gradle/gradle-build-action@v2
