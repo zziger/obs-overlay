@@ -1,5 +1,6 @@
 plugins {
     id 'com.github.johnrengelman.shadow'
+    id "me.shedaniel.unified-publishing" version "0.1.+"
 }
 
 architectury {
@@ -58,4 +59,31 @@ shadowJar {
 
 remapJar {
     input.set shadowJar.archiveFile
+}
+
+unifiedPublishing {
+    project {
+        displayName = "[Fabric $rootProject.supported_version] v$rootProject.mod_version"
+        releaseType = "release"
+        gameVersions = ["1.21"]
+        gameLoaders = ["fabric"]
+
+        mainPublication remapJar
+
+        if (rootProject.hasProperty("curse_api_key") || System.getenv("CURSE_API_KEY") != null) {
+            curseforge {
+                token = rootProject.hasProperty("curse_api_key") ? rootProject.property("curse_api_key") : System.getenv("CURSE_API_KEY")
+                id = rootProject.curseforge_id
+                gameVersions.addAll "Java 21"
+            }
+        }
+
+        if (rootProject.hasProperty("modrinth_key") || System.getenv("MODRINTH_TOKEN") != null) {
+            modrinth {
+                token = rootProject.hasProperty("modrinth_key") ? rootProject.property("modrinth_key") : System.getenv("MODRINTH_TOKEN")
+                id = rootProject.modrinth_id
+                version = "$rootProject.mod_version+$rootProject.minecraft_version-$project.name"
+            }
+        }
+    }
 }
