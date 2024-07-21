@@ -1,7 +1,10 @@
 package me.zziger.obsoverlay;
 
 
-import me.shedaniel.autoconfig.AutoConfig;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonParseException;
+import dev.architectury.platform.Platform;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
@@ -15,13 +18,18 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.function.Supplier;
 
 @Config(name = OBSOverlay.MOD_ID)
 public class OBSOverlayConfig implements ConfigData {
-    private static final OBSOverlayConfig INSTANCE = new OBSOverlayConfig();
+    private static OBSOverlayConfig INSTANCE;
 
     public HashMap<String, Boolean> overlayComponents = new HashMap<>();
     public HashMap<String, Boolean> autoHideComponents = new HashMap<>();
@@ -29,10 +37,29 @@ public class OBSOverlayConfig implements ConfigData {
     public boolean showTestIcon;
 
     public static void init() {
+        Path configPath = getPath();
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
+        if (Files.exists(configPath)) {
+            try {
+                BufferedReader reader = Files.newBufferedReader(configPath);
+                OBSOverlayConfig ret = gson.fromJson(reader, OBSOverlayConfig.class);
+                reader.close();
+                INSTANCE = ret;
+            } catch (JsonParseException | IOException var4) {
+                OBSOverlay.LOGGER.error("Failed to load config", var4);
+            }
+        } else {
+            INSTANCE = new OBSOverlayConfig();
+        }
     }
 
     public static OBSOverlayConfig get() {
         return INSTANCE;
+    }
+
+    public static Path getPath() {
+        return Platform.getConfigFolder().resolve(OBSOverlay.MOD_ID + ".json");
     }
 
     public static Supplier<Screen> getScreenSupplier(Screen parent) {
@@ -92,6 +119,20 @@ public class OBSOverlayConfig implements ConfigData {
                         .build());
             });
             general.addEntry(autoHideComponents.build());
+
+            builder.setSavingRunnable(() -> {
+                Path configPath = getPath();
+                Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
+                try {
+                    Files.createDirectories(configPath.getParent());
+                    BufferedWriter writer = Files.newBufferedWriter(configPath);
+                    gson.toJson(config, writer);
+                    writer.close();
+                } catch (IOException e) {
+                    OBSOverlay.LOGGER.error("Failed to save config", e);
+                }
+            });
 
             return builder.build();
         };
