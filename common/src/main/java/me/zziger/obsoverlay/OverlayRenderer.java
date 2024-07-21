@@ -7,13 +7,12 @@ import com.sun.jna.Pointer;
 import com.sun.jna.ptr.PointerByReference;
 import me.zziger.obsoverlay.modules.Kernel32;
 import me.zziger.obsoverlay.modules.MinHook;
+import me.zziger.obsoverlay.registry.OverlayComponent;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.Framebuffer;
 import net.minecraft.client.gl.ShaderProgram;
 import net.minecraft.client.gl.SimpleFramebuffer;
-import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.*;
-import net.minecraft.util.Identifier;
 
 import java.util.Objects;
 
@@ -39,15 +38,21 @@ public class OverlayRenderer {
         MinecraftClient.getInstance().getFramebuffer().endWrite();
     }
 
-    public static void beginDrawOrEmpty(boolean draw) {
-        if (draw) beginDraw();
-        else beginEmptyDraw();
+    public static void beginDraw(OverlayComponent component) {
+        if (!component.isOverlayEnabled()) return;
+        if (component.isHidden()) beginEmptyDraw();
+        else beginDraw();
     }
 
     public static void endDraw() {
         if (overlayFramebuffer == null) return;
         MinecraftClient.getInstance().getFramebuffer().beginWrite(false);
         framebufferDirty = true;
+    }
+
+    public static void endDraw(OverlayComponent component) {
+        if (!component.isOverlayEnabled()) return;
+        endDraw();
     }
 
     public static void onResolutionChanged(MinecraftClient client) {

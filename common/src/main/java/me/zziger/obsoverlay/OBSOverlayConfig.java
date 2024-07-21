@@ -1,35 +1,99 @@
 package me.zziger.obsoverlay;
 
-import eu.midnightdust.lib.config.MidnightConfig;
 
-public class OBSOverlayConfig extends MidnightConfig {
-    @Comment() public static Comment comment1;
-    @Entry() public static boolean overlayDebugMenu = true;
-    @Entry() public static boolean overlayChat = false;
-    @Entry() public static boolean overlayChatBar = false;
-    @Entry() public static boolean overlayPlayerList = false;
-    @Entry() public static boolean overlaySubtitles = false;
-    @Entry() public static boolean overlayScoreboards = false;
-    @Entry() public static boolean overlayActionbar = false;
-    @Entry() public static boolean overlayTitleSubtitle = false;
-    @Entry() public static boolean overlayEffects = false;
-    @Entry() public static boolean overlayMainHud = false;
-    @Comment() public static Comment comment4;
-    @Entry() public static boolean showTestIcon = false;
+import me.shedaniel.autoconfig.AutoConfig;
+import me.shedaniel.autoconfig.ConfigData;
+import me.shedaniel.autoconfig.annotation.Config;
+import me.shedaniel.clothconfig2.api.ConfigBuilder;
+import me.shedaniel.clothconfig2.api.ConfigCategory;
+import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
+import me.shedaniel.clothconfig2.api.Requirement;
+import me.shedaniel.clothconfig2.gui.entries.BooleanListEntry;
+import me.shedaniel.clothconfig2.impl.builders.SubCategoryBuilder;
+import me.zziger.obsoverlay.registry.OverlayComponentRegistry;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 
-    @Comment(category = "additional") public static Comment comment2;
-    @Comment(category = "additional") public static Comment comment3;
-    @Entry(category = "additional") public static boolean autoHideDebugMenu = true;
-    @Entry(category = "additional") public static boolean autoHideChat = true;
-    @Entry(category = "additional") public static boolean autoHideSubtitles = true;
-    @Entry(category = "additional") public static boolean autoHideScoreboards = true;
-    @Entry(category = "additional") public static boolean autoHideActionbar = true;
-    @Entry(category = "additional") public static boolean autoHideTitleSubtitle = true;
-    @Entry(category = "additional") public static boolean autoHideEffects = true;
-    @Entry(category = "additional") public static boolean autoHideMainHud = true;
+import java.util.HashMap;
+import java.util.Optional;
+import java.util.function.Supplier;
 
+@Config(name = OBSOverlay.MOD_ID)
+public class OBSOverlayConfig implements ConfigData {
+    private static final OBSOverlayConfig INSTANCE = new OBSOverlayConfig();
+
+    public HashMap<String, Boolean> overlayComponents = new HashMap<>();
+    public HashMap<String, Boolean> autoHideComponents = new HashMap<>();
+
+    public boolean showTestIcon;
 
     public static void init() {
-        MidnightConfig.init(OBSOverlay.MOD_ID, OBSOverlayConfig.class);
+    }
+
+    public static OBSOverlayConfig get() {
+        return INSTANCE;
+    }
+
+    public static Supplier<Screen> getScreenSupplier(Screen parent) {
+        OBSOverlayConfig config = get();
+
+        return () -> {
+            ConfigBuilder builder = ConfigBuilder.create()
+                    .setParentScreen(parent)
+                    .setTitle(Text.translatable("obs_overlay.config.title"));
+            ConfigEntryBuilder entryBuilder = builder.entryBuilder();
+            ConfigCategory general = builder.getOrCreateCategory(Text.empty());
+
+
+            general.addEntry(entryBuilder.startBooleanToggle(Text.translatable("obs_overlay.config.show_test_icon"), config.showTestIcon)
+                    .setTooltip(Text.translatable("obs_overlay.config.show_test_icon.tooltip"))
+                    .setDefaultValue(false)
+                    .setSaveConsumer((value) -> config.showTestIcon = value)
+                    .build());
+
+            HashMap<String, BooleanListEntry> overlayEntries = new HashMap<>();
+            SubCategoryBuilder componentsToOverlay = entryBuilder.startSubCategory(Text.translatable("obs_overlay.config.components_to_overlay"))
+                    .setExpanded(true)
+                    .setTooltip(Text.translatable("obs_overlay.config.components_to_overlay.tooltip"));
+
+            OverlayComponentRegistry.components.forEach(component -> {
+                BooleanListEntry entry = entryBuilder.startBooleanToggle(Text.translatable("obs_overlay.component." + component.getId()), component.isOverlayEnabled())
+                        .setTooltip(Text.translatable("obs_overlay.component." + component.getId() + ".tooltip"))
+                        .setDefaultValue(component.isOverlayEnabledDefault())
+                        .setSaveConsumer(component::setOverlayEnabled)
+                        .build();
+                overlayEntries.put(component.getId(), entry);
+                componentsToOverlay.add(entry);
+            });
+            general.addEntry(componentsToOverlay.build());
+
+            SubCategoryBuilder autoHideComponents = entryBuilder.startSubCategory(Text.translatable("obs_overlay.config.auto_hide_components"))
+                    .setExpanded(false)
+                    .setTooltip(Text.translatable("obs_overlay.config.auto_hide_components.tooltip"));
+
+            OverlayComponentRegistry.components.forEach(component -> {
+                if (!component.canAutoHide()) return;
+                if (!overlayEntries.containsKey(component.getId())) return;
+
+                autoHideComponents.add(entryBuilder.startBooleanToggle(Text.translatable("obs_overlay.component." + component.getId()), component.isAutoHideEnabled())
+                        .setDefaultValue(true)
+                        .setRequirement(Requirement.isTrue(overlayEntries.get(component.getId())))
+                        .setTooltipSupplier(() -> {
+                            Text mainTooltip = Text.translatable("obs_overlay.component." + component.getId() + ".tooltip");
+                            if (overlayEntries.get(component.getId()).getValue()) {
+                                return Optional.of(new Text[]{mainTooltip});
+                            } else {
+                                Text optionName = Text.translatable("obs_overlay.component." + component.getId());
+                                return Optional.of(new Text[] {mainTooltip, Text.translatable("obs_overlay.config.requires_overlay_enabled", optionName).formatted(Formatting.RED)});
+                            }
+                        })
+                        .setSaveConsumer(component::setAutoHideEnabled)
+                        .build());
+            });
+            general.addEntry(autoHideComponents.build());
+
+            return builder.build();
+        };
     }
 }

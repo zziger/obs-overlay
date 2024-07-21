@@ -1,6 +1,7 @@
 package me.zziger.obsoverlay;
 
 import dev.architectury.platform.Platform;
+import me.zziger.obsoverlay.registry.AllDefaultOverlayComponents;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,5 +62,6 @@ public final class OBSOverlay {
         else OBSOverlay.LOGGER.error("Failed to initialize OBS Overlay library");
 
         OBSOverlayConfig.init();
+        AllDefaultOverlayComponents.init();
     }
 }

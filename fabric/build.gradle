@@ -33,7 +33,11 @@ dependencies {
     // Architectury API. This is optional, and you can comment it out if you don't need it.
     modImplementation "dev.architectury:architectury-fabric:$rootProject.architectury_api_version"
 
-    modImplementation include("maven.modrinth:midnightlib:$rootProject.midnightlib_version-fabric")
+    modCompileOnlyApi("me.shedaniel.cloth:cloth-config-fabric:$rootProject.cloth_config_version") {
+        exclude(group: "net.fabricmc.fabric-api")
+    }
+
+    modCompileOnlyApi "com.terraformersmc:modmenu:$rootProject.modmenu_version"
 
     common(project(path: ':common', configuration: 'namedElements')) { transitive false }
     shadowBundle project(path: ':common', configuration: 'transformProductionFabric')

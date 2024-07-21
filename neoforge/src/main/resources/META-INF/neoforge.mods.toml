@@ -9,10 +9,10 @@ version = "${version}"
 displayName = "OBS Overlay"
 authors = "zziger"
 description = '''
-Hide HUD elements from OBS stream by making them an overlay
+Hide HUD elements from OBS stream by making them an overlay.
 '''
 displayTest="IGNORE_ALL_VERSION"
-#logoFile = ""
+logoFile = "assets/obs_overlay/icon.png"
 
 [[dependencies.obs_overlay]]
 modId = "neoforge"
@@ -32,6 +32,13 @@ side = "BOTH"
 modId = "architectury"
 type = "required"
 versionRange = "[13.0.2,)"
+ordering = "AFTER"
+side = "BOTH"
+
+[[dependencies.obs_overlay]]
+modId = "cloth_config"
+type = "required"
+versionRange = "[15.0.127,)"
 ordering = "AFTER"
 side = "BOTH"
 

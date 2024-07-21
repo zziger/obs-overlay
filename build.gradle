@@ -33,6 +33,11 @@ subprojects {
         maven {
             url = "https://api.modrinth.com/maven"
         }
+        maven {
+            name = "Terraformers"
+            url = "https://maven.terraformersmc.com/"
+        }
+        maven { url "https://maven.shedaniel.me/" }
     }
 
     dependencies {

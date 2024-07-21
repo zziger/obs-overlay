@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 public class GameRendererMixin {
     @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;draw()V"))
     private void renderTestIcon(DrawContext instance) {
-        if (OBSOverlayConfig.showTestIcon && OBSOverlay.libraryInitialized) {
+        if (OBSOverlayConfig.get().showTestIcon && OBSOverlay.libraryInitialized) {
             OverlayRenderer.beginDraw();
             try {
                 instance.drawGuiTexture(Identifier.ofVanilla("icon/checkmark"), 0, 0, 16, 16);

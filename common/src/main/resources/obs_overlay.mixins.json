@@ -4,15 +4,16 @@
   "compatibilityLevel": "JAVA_21",
   "minVersion": "0.8",
   "client": [
-    "ChatHudMixin",
-    "ChatScreenMixin",
-    "DebugHudMixin",
+    "hud.ChatHudMixin",
+    "hud.ChatScreenMixin",
+    "hud.DebugHudMixin",
+    "hud.InGameHudMixin",
+    "hud.PlayerListHudMixin",
+    "hud.SubtitlesHudMixin",
     "GameRendererMixin",
-    "InGameHudMixin",
     "MinecraftClientMixin",
-    "PlayerListHudMixin",
-    "SubtitlesHudMixin",
-    "TitleScreenMixin"
+    "TitleScreenMixin",
+    "VideoOptionsScreenMixin"
   ],
   "mixins": [
   ],
