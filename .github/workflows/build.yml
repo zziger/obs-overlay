@@ -51,12 +51,9 @@ jobs:
           tag_name: ${{ github.ref_name }}
           name: ${{ env.package_name }}
           generate_release_notes: true
+          fail_on_unmatched_files: true
           files: |
-            ./**/build/libs/*.jar
-            !build/libs/*.jar
-            !./**/*-dev.jar
-            !./**/*-shadow.jar
-            !./**/*-transformProduction*.jar
+            !(common)/build/libs/!(*-dev|*-shadow|*-transformProduction*).jar
 
 #      - name: Release to Maven and CurseForge
 #        uses: gradle/gradle-build-action@v2
