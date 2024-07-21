@@ -53,7 +53,7 @@ jobs:
           generate_release_notes: true
           fail_on_unmatched_files: true
           files: |
-            !(common)/build/libs/!(*-dev|*-shadow|*-transformProduction*).jar
+            */build/libs/!(*-dev|*-shadow|*-transformProduction*).jar
 
 #      - name: Release to Maven and CurseForge
 #        uses: gradle/gradle-build-action@v2
