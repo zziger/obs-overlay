@@ -55,7 +55,7 @@ jobs:
           files: |
             */build/libs/!(*-dev|*-shadow|*-transformProduction*).jar
 
-      - name: Release to Maven and CurseForge
+      - name: Release to Modrinth and CurseForge
         uses: gradle/gradle-build-action@v2
         env:
 #          MAVEN_PASS: ${{ secrets.MAVEN_PASS }}
