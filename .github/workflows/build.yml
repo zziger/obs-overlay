@@ -3,7 +3,7 @@ name: Build and Release (1.21)
 on:
   push:
     tags:
-      - '*.*.*\+1.21'
+      - '1.21\/*.*.*'
 
 jobs:
   build:
@@ -38,7 +38,7 @@ jobs:
         uses: nick-fields/assert-action@v2
         with:
           expected: '${{ github.ref_name }}'
-          actual: '${{ env.mod_version }}+${{ env.minecraft_version }}'
+          actual: '${{ env.minecraft_version }}/${{ env.mod_version }}'
 
       - name: Create package name
         run: echo "package_name=$mod_version - Minecraft $minecraft_version" >> $GITHUB_ENV
