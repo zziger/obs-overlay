@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "package": "me.zziger.obsoverlay.fabric.client.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "minVersion": "0.8",
+  "client": [
+    "GameRendererMixin"
+  ],
+  "mixins": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

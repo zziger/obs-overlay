@@ -1,7 +1,10 @@
 package me.zziger.obsoverlay;
 
+import dev.architectury.event.events.common.*;
 import dev.architectury.platform.Platform;
 import me.zziger.obsoverlay.registry.AllDefaultOverlayComponents;
+import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.screen.Screen;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,6 +59,21 @@ public final class OBSOverlay {
         return true;
     }
 
+    public static void beforeScreenRender(Screen instance) {
+        boolean overlay = OverlayUtils.isScreenOverlayed(instance);
+        if (overlay) {
+            OverlayRenderer.beginDraw();
+        }
+    }
+
+    public static void afterScreenRender(Screen instance, DrawContext context) {
+        context.draw();
+        boolean overlay = OverlayUtils.isScreenOverlayed(instance);
+        if (overlay) {
+            OverlayRenderer.endDraw();
+        }
+    }
+
 
     public static void init() {
         if (initLibrary()) libraryInitialized = true;
@@ -63,5 +81,7 @@ public final class OBSOverlay {
 
         OBSOverlayConfig.init();
         AllDefaultOverlayComponents.init();
+
+
     }
 }

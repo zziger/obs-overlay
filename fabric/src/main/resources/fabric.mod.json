@@ -32,7 +32,8 @@
     }
   },
   "mixins": [
-    "obs_overlay.mixins.json"
+    "obs_overlay.mixins.json",
+    "obs_overlay.fabric.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=0.15.6",

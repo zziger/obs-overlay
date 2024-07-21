@@ -9,6 +9,16 @@
   "obs_overlay.config.requires_overlay_enabled": "Wymaga, aby komponent \"%s\" był ukryty przed OBS",
   "obs_overlay.config.show_test_icon": "Wyświetl testową ikonkę w lewym górnym rogu ekranu",
   "obs_overlay.config.show_test_icon.tooltip": "Spowoduje to włączenie ikonki testowej, która będzie widoczna wszędzie, ale ukryta przed OBS.\nMożna jej użyć do szybkiego sprawdzenia, czy komponenty nakładki rzeczywiście nie są widoczne w OBS",
+  "obs_overlay.config.screens_to_overlay": "Wybierz ekrany, które chcesz ukryć przed OBS:",
+  "obs_overlay.config.screens_to_overlay.tooltip": "Wybrane ekrany będą renderowane jako nakładka, a przez to nie będą widoczne w OBS Game Capture",
+  "obs_overlay.config.enable_custom_handled_screens": "Włącz własną listę ekranów, które mają być ukryte przed OBS.",
+  "obs_overlay.config.enable_custom_handled_screens.tooltip": "Umożliwia ustawienie własnej listy identyfikatorów ekranów wyświetlanych jako nakładka. Nie każdy ekran w grze ma identyfikator, takie ekrany nie są obsługiwane",
+  "obs_overlay.config.custom_handled_screens": "Wprowadź identyfikatory ekranów:",
+  "obs_overlay.config.custom_handled_screens.tooltip": "To są identyfikatory typów ScreenHandler. Pełną listę możliwych identyfikatorów można znaleźć poniżej",
+  "obs_overlay.config.existing_handled_screens": "Istniejące identyfikatory ekranów:",
+  "obs_overlay.config.existing_handled_screens.tooltip": "Możesz użyć wartości znalezionych na tej liście, aby wprowadzić je do powyższej listy.",
+  "obs_overlay.config.screen_doesnt_exist": "Ekran '%s' nie istnieje",
+  "obs_overlay.config.hide_all_screens": "Ukryj wszystkie ekrany",
   "obs_overlay.component.debug_menu": "Menu Debug (F3)",
   "obs_overlay.component.debug_menu.tooltip": "Menu F3 zawierające debug informacje, w tym współrzędne, informacje o fragmentach itp.",
   "obs_overlay.component.chat": "Czat",
@@ -28,5 +38,9 @@
   "obs_overlay.component.effects": "Efekty mikstur",
   "obs_overlay.component.effects.tooltip": "Efekty mikstur wyświetlane w prawym górnym rogu ekranu",
   "obs_overlay.component.main_hud": "Główny HUD",
-  "obs_overlay.component.main_hud.tooltip": "Podstawowe elementy HUD, w tym pasek gorąca, zdrowie, głód, pancerz, doświadczenie itp."
+  "obs_overlay.component.main_hud.tooltip": "Podstawowe elementy HUD, w tym pasek gorąca, zdrowie, głód, pancerz, doświadczenie itp.",
+  "obs_overlay.screen.inventory": "Ekwipunek Trybu przetrwania",
+  "obs_overlay.screen.creative_inventory": "Ekwipunek Trybu kreatywnego",
+  "obs_overlay.screen.pause_menu": "Menu pauzy",
+  "obs_overlay.screen.command_block": "Blok poleceń"
 }

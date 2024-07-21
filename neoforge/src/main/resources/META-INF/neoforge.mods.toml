@@ -44,3 +44,6 @@ side = "BOTH"
 
 [[mixins]]
 config = "obs_overlay.mixins.json"
+
+[[mixins]]
+config = "obs_overlay.neoforge.mixins.json"

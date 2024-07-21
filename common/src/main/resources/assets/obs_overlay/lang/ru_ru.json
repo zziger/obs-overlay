@@ -9,6 +9,16 @@
   "obs_overlay.config.requires_overlay_enabled": "Требует, чтобы компонент '%s' был скрыт из OBS",
   "obs_overlay.config.show_test_icon": "Отображать тестовую иконку в верхнем левом углу экрана",
   "obs_overlay.config.show_test_icon.tooltip": "Это включит тестовую иконку, которая будет видна везде, но скрыта из OBS.\nВы можете использовать её чтобы быстро проверить, что оверлей-компоненты действительно не видны в OBS",
+  "obs_overlay.config.screens_to_overlay": "Выберите экраны, которые нужно скрыть из OBS:",
+  "obs_overlay.config.screens_to_overlay.tooltip": "Выбранные экраны будут рендериться как оверлей и в следствии скрыты от Захвата игры в OBS.",
+  "obs_overlay.config.enable_custom_handled_screens": "Включить пользовательский список экранов для скрытия от OBS",
+  "obs_overlay.config.enable_custom_handled_screens.tooltip": "Это включает установку своего списка идентификаторов экранов, которые будут отображаться как оверлей.\nНе каждый экран в игре имеет идентификатор, такие экраны не поддерживаются",
+  "obs_overlay.config.custom_handled_screens": "Введите идентификаторы экранов:",
+  "obs_overlay.config.custom_handled_screens.tooltip": "Это идентификаторы типов ScreenHandler.\nПолный список возможных идентификаторов вы можете найти ниже",
+  "obs_overlay.config.existing_handled_screens": "Существующие идентификаторы экранов:",
+  "obs_overlay.config.existing_handled_screens.tooltip": "Вы можете использовать значения, найденные в этом списке, для ввода в список выше",
+  "obs_overlay.config.screen_doesnt_exist": "Экран '%s' не существует",
+  "obs_overlay.config.hide_all_screens": "Скрыть все экраны",
   "obs_overlay.component.debug_menu": "Меню отладки (F3)",
   "obs_overlay.component.debug_menu.tooltip": "Меню F3 содержащее информацию для отладки, включая координаты, информацию о чанках, и т.д.",
   "obs_overlay.component.chat": "Чат",
@@ -28,5 +38,9 @@
   "obs_overlay.component.effects": "Эффекты зелий",
   "obs_overlay.component.effects.tooltip": "Эффекты зелий, которые отображаются в правом верхнем углу экрана",
   "obs_overlay.component.main_hud": "Основной HUD",
-  "obs_overlay.component.main_hud.tooltip": "Основные элементы HUD включающие в себя хотбар, здоровье, голод, броню, опыт, и т.д."
+  "obs_overlay.component.main_hud.tooltip": "Основные элементы HUD включающие в себя хотбар, здоровье, голод, броню, опыт, и т.д.",
+  "obs_overlay.screen.inventory": "Инвентарь Выживания",
+  "obs_overlay.screen.creative_inventory": "Инвентарь Творческого режима",
+  "obs_overlay.screen.pause_menu": "Меню Паузы",
+  "obs_overlay.screen.command_block": "Командный блок"
 }

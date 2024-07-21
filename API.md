@@ -45,7 +45,14 @@ You will also need to define `obs_overlay.component.your_component_id` and `obs_
 
 For example check [ChatHudMixin](common/src/main/java/me/zziger/obsoverlay/mixin/hud/ChatHudMixin.java) and [DefaultOverlayComponent](common/src/main/java/me/zziger/obsoverlay/registry/DefaultOverlayComponent.java).
 
+### Adding your own overlayable screens to settings
+
+You can extend list of screens that are displayed in mod settings.\
+To achieve that you can call `OverlayComponentRegistry.addHideableScreen` method.
+
+Screen's state will be stored in OBS Overlay config.
+
 ### Adding your own non-fullscreen screens
 
 By default, this mod automatically hides most components when any screen except for Chat is opened.\
-You can add your own Screen that will also be excluded from this check by calling `OverlayComponentRegistry.addIgnoredScreen` method. 
+You can add your own Screen that will also be excluded from this check by calling `OverlayComponentRegistry.addIgnoredScreen` method.

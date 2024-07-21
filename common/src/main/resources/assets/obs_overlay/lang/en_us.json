@@ -9,6 +9,16 @@
   "obs_overlay.config.requires_overlay_enabled": "Requires '%s' to be hidden from OBS",
   "obs_overlay.config.show_test_icon": "Show test icon in the top left corner",
   "obs_overlay.config.show_test_icon.tooltip": "This will enable a test icon that will be visible anywhere but hidden in the stream.\nYou can use it to quickly check if overlay components are not visible",
+  "obs_overlay.config.screens_to_overlay": "Select screens to hide from OBS:",
+  "obs_overlay.config.screens_to_overlay.tooltip": "Selected screens will be rendered as an overlay, and therefore hidden from OBS' game capture.",
+  "obs_overlay.config.enable_custom_handled_screens": "Enable custom list of screens to hide from OBS",
+  "obs_overlay.config.enable_custom_handled_screens.tooltip": "This enables a list of identifiers of screens that will be rendered as an overlay.\nNot every screen in the game has an identifier, those are not supported",
+  "obs_overlay.config.custom_handled_screens": "Enter screen identifiers:",
+  "obs_overlay.config.custom_handled_screens.tooltip": "Those are the identifiers of ScreenHandler types.\nYou can find a full list of possible identifiers below",
+  "obs_overlay.config.existing_handled_screens": "Existing screen identifiers:",
+  "obs_overlay.config.existing_handled_screens.tooltip": "You can use values found in this list to enter into the list above",
+  "obs_overlay.config.screen_doesnt_exist": "Screen '%s' does not exist",
+  "obs_overlay.config.hide_all_screens": "Hide all screens",
   "obs_overlay.component.debug_menu": "Debug menu (F3)",
   "obs_overlay.component.debug_menu.tooltip": "An F3 menu containing debug information including coordinates, chunk information, etc",
   "obs_overlay.component.chat": "Chat",
@@ -28,5 +38,9 @@
   "obs_overlay.component.effects": "Potion effects",
   "obs_overlay.component.effects.tooltip": "Potion effects displayed in the top right corner of the screen",
   "obs_overlay.component.main_hud": "Main HUD",
-  "obs_overlay.component.main_hud.tooltip": "Main HUD elements including hotbar, health, hunger, armor, experience, etc"
+  "obs_overlay.component.main_hud.tooltip": "Main HUD elements including hotbar, health, hunger, armor, experience, etc",
+  "obs_overlay.screen.inventory": "Survival Inventory",
+  "obs_overlay.screen.creative_inventory": "Creative Inventory",
+  "obs_overlay.screen.pause_menu": "Pause Menu",
+  "obs_overlay.screen.command_block": "Command Block"
 }

@@ -9,6 +9,16 @@
   "obs_overlay.config.requires_overlay_enabled": "Вимагає, щоб компонент '%s' був прихований з OBS",
   "obs_overlay.config.show_test_icon": "Відображати тестову іконку у верхньому лівому кутку екрана",
   "obs_overlay.config.show_test_icon.tooltip": "Це увімкне тестову іконку, яку буде видно усюди, але приховано з OBS.\nВи можете використовувати її, щоб швидко перевірити, що оверлей-компоненти дійсно не видно в OBS",
+  "obs_overlay.config.screens_to_overlay": "Виберіть екрани, які потрібно приховати з OBS:",
+  "obs_overlay.config.screens_to_overlay.tooltip": "Вибрані екрани будуть візуалізуватися як оверлей і, як наслідок, приховані від Захоплення гри в OBS.",
+  "obs_overlay.config.enable_custom_handled_screens": "Увімкнути користувацький список екранів для приховування від OBS",
+  "obs_overlay.config.enable_custom_handled_screens.tooltip": "Це вмикає установку свого списку ідентифікаторів екранів, які відображатимуться як оверлей.\nНе кожен екран у грі має ідентифікатор, такі екрани не підтримуються",
+  "obs_overlay.config.custom_handled_screens": "Введіть ідентифікатори екранів:",
+  "obs_overlay.config.custom_handled_screens.tooltip": "Це ідентифікатори типів ScreenHandler.\nПовний список можливих ідентифікаторів ви можете знайти нижче",
+  "obs_overlay.config.existing_handled_screens": "Існуючі ідентифікатори екранів:",
+  "obs_overlay.config.existing_handled_screens.tooltip": "Ви можете використовувати значення, знайдені в цьому списку, для введення в список вище",
+  "obs_overlay.config.screen_doesnt_exist": "Екран '%s' не існує",
+  "obs_overlay.config.hide_all_screens": "Приховати всі екрани",
   "obs_overlay.component.debug_menu": "Меню отладки (F3)",
   "obs_overlay.component.debug_menu.tooltip": "Меню F3 містить інформацію для налагодження, включно з координатами, інформацією про чанки тощо.",
   "obs_overlay.component.chat": "Чат",
@@ -28,5 +38,9 @@
   "obs_overlay.component.effects": "Ефекти зілля",
   "obs_overlay.component.effects.tooltip": "Ефекти зілля, які відображаються в правому верхньому кутку екрана",
   "obs_overlay.component.main_hud": "Основний HUD",
-  "obs_overlay.component.main_hud.tooltip": "Основні елементи HUD включають в себе хотбар, здоров'я, голод, броню, досвід, і т.д."
+  "obs_overlay.component.main_hud.tooltip": "Основні елементи HUD включають в себе хотбар, здоров'я, голод, броню, досвід, і т.д.",
+  "obs_overlay.screen.inventory": "Інвентар Виживання",
+  "obs_overlay.screen.creative_inventory": "Інвентар Творчости",
+  "obs_overlay.screen.pause_menu": "Меню Паузи",
+  "obs_overlay.screen.command_block": "Командний блок"
 }

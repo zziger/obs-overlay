@@ -35,6 +35,15 @@ This mod lets you hide any combination of the following components:
 - Effect display
 - Main HUD (health, hunger, armor, experience, hotbar)
 
+Additionally this mod lets you hide any combination of the following *screens*:
+
+- Survival inventory
+- Creative inventory
+- Pause menu
+- Command block screen
+- Any HandledScreen by it's ID (e.g. `minecraft:anvil`, `minecraft:furnace`)
+- All ingame screens
+
 By default only Debug menu (F3) is hidden.
 
 > [!WARNING]
