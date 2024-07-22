@@ -20,52 +20,52 @@ public class InGameHudMixin {
         OverlayRenderer.endDraw(AllDefaultOverlayComponents.scoreboards);
     }
 
-    @Inject(method = "renderOverlayMessage(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V", at = @At("HEAD"))
+    @Inject(method = "renderOverlayMessage", at = @At("HEAD"))
     private void drawStartActionbar(CallbackInfo ci) {
         OverlayRenderer.beginDraw(AllDefaultOverlayComponents.actionbar);
     }
 
-    @Inject(method = "renderOverlayMessage(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V", at = @At("RETURN"))
+    @Inject(method = "renderOverlayMessage", at = @At("RETURN"))
     private void drawEndActionbar(CallbackInfo ci) {
         OverlayRenderer.endDraw(AllDefaultOverlayComponents.actionbar);
     }
 
-    @Inject(method = "renderTitleAndSubtitle(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V", at = @At("HEAD"))
+    @Inject(method = "renderTitleAndSubtitle", at = @At("HEAD"))
     private void drawStartTitleSubtitle(CallbackInfo ci) {
         OverlayRenderer.beginDraw(AllDefaultOverlayComponents.titleSubtitle);
     }
 
-    @Inject(method = "renderTitleAndSubtitle(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V", at = @At("RETURN"))
+    @Inject(method = "renderTitleAndSubtitle", at = @At("RETURN"))
     private void drawEndTitleSubtitle(CallbackInfo ci) {
         OverlayRenderer.endDraw(AllDefaultOverlayComponents.titleSubtitle);
     }
 
-    @Inject(method = "renderExperienceLevel(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V", at = @At("HEAD"))
+    @Inject(method = "renderExperienceLevel", at = @At("HEAD"))
     private void drawStartExperienceLevel(CallbackInfo ci) {
         OverlayRenderer.beginDraw(AllDefaultOverlayComponents.mainHud);
     }
 
-    @Inject(method = "renderExperienceLevel(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V", at = @At("RETURN"))
+    @Inject(method = "renderExperienceLevel", at = @At("RETURN"))
     private void drawEndExperienceLevel(CallbackInfo ci) {
         OverlayRenderer.endDraw(AllDefaultOverlayComponents.mainHud);
     }
 
-    @Inject(method = "renderStatusEffectOverlay(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V", at = @At("HEAD"))
+    @Inject(method = "renderStatusEffectOverlay", at = @At("HEAD"))
     private void drawStartEffects(CallbackInfo ci) {
         OverlayRenderer.beginDraw(AllDefaultOverlayComponents.effects);
     }
 
-    @Inject(method = "renderStatusEffectOverlay(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V", at = @At("RETURN"))
+    @Inject(method = "renderStatusEffectOverlay", at = @At("RETURN"))
     private void drawEndEffects(CallbackInfo ci) {
         OverlayRenderer.endDraw(AllDefaultOverlayComponents.effects);
     }
 
-    @Inject(method = "renderMainHud(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V", at = @At("HEAD"))
+    @Inject(method = "renderMainHud", at = @At("HEAD"))
     private void drawStartMainHud(CallbackInfo ci) {
         OverlayRenderer.beginDraw(AllDefaultOverlayComponents.mainHud);
     }
 
-    @Inject(method = "renderMainHud(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V", at = @At("RETURN"))
+    @Inject(method = "renderMainHud", at = @At("RETURN"))
     private void drawEndMainHud(CallbackInfo ci) {
         OverlayRenderer.endDraw(AllDefaultOverlayComponents.mainHud);
     }
