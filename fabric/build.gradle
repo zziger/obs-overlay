@@ -70,6 +70,25 @@ unifiedPublishing {
 
         mainPublication remapJar
 
+        relations {
+            depends {
+                curseforge = "cloth-config"
+                modrinth = "cloth-config"
+            }
+            depends {
+                curseforge = "fabric-api"
+                modrinth = "fabric-api"
+            }
+            depends {
+                curseforge = "architectury-api"
+                modrinth = "architectury-api"
+            }
+            optional {
+                curseforge = "modmenu"
+                modrinth = "modmenu"
+            }
+        }
+
         if (rootProject.hasProperty("curse_api_key") || System.getenv("CURSE_API_KEY") != null) {
             curseforge {
                 token = rootProject.hasProperty("curse_api_key") ? rootProject.property("curse_api_key") : System.getenv("CURSE_API_KEY")
