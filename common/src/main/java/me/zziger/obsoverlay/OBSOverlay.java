@@ -81,7 +81,5 @@ public final class OBSOverlay {
 
         OBSOverlayConfig.init();
         AllDefaultOverlayComponents.init();
-
-
     }
 }

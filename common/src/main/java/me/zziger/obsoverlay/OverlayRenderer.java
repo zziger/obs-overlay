@@ -40,6 +40,7 @@ public class OverlayRenderer {
 
     public static void beginDraw(OverlayComponent component) {
         if (!component.isOverlayEnabled()) return;
+        component.beforeBeginDraw();
         if (component.isHidden()) beginEmptyDraw();
         else beginDraw();
     }
@@ -52,6 +53,7 @@ public class OverlayRenderer {
 
     public static void endDraw(OverlayComponent component) {
         if (!component.isOverlayEnabled()) return;
+        component.beforeEndDraw();
         endDraw();
     }
 

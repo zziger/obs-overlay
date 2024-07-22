@@ -44,4 +44,14 @@ public interface OverlayComponent {
      * @return Is the component hidden (e.g. by auto-hide)
      */
     boolean isHidden();
+
+    /**
+     * Invoked before beginDraw
+     */
+    default void beforeBeginDraw() {};
+
+    /**
+     * Invoked before endDraw
+     */
+    default void beforeEndDraw() {};
 }

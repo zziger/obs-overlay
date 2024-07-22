@@ -14,4 +14,6 @@ dependencies {
     modCompileOnlyApi ("me.shedaniel.cloth:cloth-config-fabric:$rootProject.cloth_config_version") {
         exclude(group: "net.fabricmc.fabric-api")
     }
+
+    modCompileOnlyApi("maven.modrinth:immediatelyfast:$rootProject.immediatelyfast_version-fabric")
 }
