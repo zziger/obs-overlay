@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class ChatHudMixin {
     @Inject(method = "render", at = @At("HEAD"))
     private void drawStart(CallbackInfo ci) {
-        OverlayRenderer.endDraw(AllDefaultOverlayComponents.chat);
+        OverlayRenderer.beginDraw(AllDefaultOverlayComponents.chat);
     }
 
     @Inject(method = "render", at = @At("RETURN"))
