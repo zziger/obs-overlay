@@ -96,7 +96,7 @@ public class OverlayRenderer {
     public static void init(MinecraftClient client) {
         if (!OBSOverlay.libraryInitialized) return;
 
-        overlayFramebuffer = new SimpleFramebuffer(client.getWindow().getFramebufferWidth(), client.getWindow().getFramebufferHeight(), false, IS_SYSTEM_MAC);
+        overlayFramebuffer = new SimpleFramebuffer(client.getWindow().getFramebufferWidth(), client.getWindow().getFramebufferHeight(), true, IS_SYSTEM_MAC);
         RenderSystem.clearColor(0, 0, 0, 0);
         overlayFramebuffer.setClearColor(0, 0, 0, 0);
         overlayFramebuffer.clear(IS_SYSTEM_MAC);

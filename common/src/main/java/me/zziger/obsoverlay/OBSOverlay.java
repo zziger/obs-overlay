@@ -1,8 +1,9 @@
 package me.zziger.obsoverlay;
 
-import dev.architectury.event.events.common.*;
+import com.mojang.blaze3d.systems.RenderSystem;
 import dev.architectury.platform.Platform;
 import me.zziger.obsoverlay.registry.AllDefaultOverlayComponents;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import org.apache.commons.io.IOUtils;
@@ -63,6 +64,7 @@ public final class OBSOverlay {
         boolean overlay = OverlayUtils.isScreenOverlayed(instance);
         if (overlay) {
             OverlayRenderer.beginDraw();
+            RenderSystem.clear(256, MinecraftClient.IS_SYSTEM_MAC);
         }
     }
 

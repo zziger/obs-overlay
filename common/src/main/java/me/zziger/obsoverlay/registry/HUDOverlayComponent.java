@@ -1,9 +1,8 @@
 package me.zziger.obsoverlay.registry;
 
-import me.zziger.obsoverlay.OBSOverlayConfig;
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import me.zziger.obsoverlay.compat.ImmediatelyFastCompat;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.Screen;
 
 public class HUDOverlayComponent extends DefaultOverlayComponent {
     public HUDOverlayComponent(String id, boolean defaultOverlay, boolean canAutoHide) {
@@ -13,10 +12,12 @@ public class HUDOverlayComponent extends DefaultOverlayComponent {
     @Override
     public void beforeBeginDraw() {
         ImmediatelyFastCompat.forceDraw();
+        RenderSystem.blendFuncSeparate(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SrcFactor.ONE, GlStateManager.DstFactor.ONE);
     }
 
     @Override
     public void beforeEndDraw() {
         ImmediatelyFastCompat.forceDraw();
+        RenderSystem.defaultBlendFunc();
     }
 }
