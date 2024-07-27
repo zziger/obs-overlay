@@ -45,7 +45,7 @@ jobs:
         run: echo "package_name=$mod_version - Minecraft $supported_version" >> $GITHUB_ENV
 
       - name: Rename JARs
-        run: ls ./*/build/libs/!(*-dev|*-shadow|*-transformProduction*).jar | sed 's/.jar$//g' | xargs -i mv {}{.jar,-$minecraft_version.jar}
+        run: ls ./*/build/libs/*.jar | sed 's/.jar$//g' | xargs -i mv {}{.jar,-$minecraft_version.jar}
 
       - name: Create release
         uses: softprops/action-gh-release@v2
