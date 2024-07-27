@@ -13,92 +13,92 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(InGameHud.class)
 public class InGameHudMixin {
     @Inject(method = "renderHotbar", at = @At(value = "HEAD"))
-    private void drawStartHotbar(DrawContext arg, RenderTickCounter arg2, CallbackInfo ci) {
+    private void drawStartHotbar(CallbackInfo ci) {
         OverlayRenderer.beginDraw(AllDefaultOverlayComponents.mainHud);
     }
 
     @Inject(method = "renderHotbar", at = @At(value = "RETURN"))
-    private void drawEndHotbar(DrawContext arg, RenderTickCounter arg2, CallbackInfo ci) {
+    private void drawEndHotbar(CallbackInfo ci) {
         OverlayRenderer.endDraw(AllDefaultOverlayComponents.mainHud);
     }
 
     @Inject(method = "maybeRenderJumpMeter", at = @At(value = "HEAD"))
-    private void drawStartJumpMeter(DrawContext arg, RenderTickCounter arg2, CallbackInfo ci) {
+    private void drawStartJumpMeter(CallbackInfo ci) {
         OverlayRenderer.beginDraw(AllDefaultOverlayComponents.mainHud);
     }
 
     @Inject(method = "maybeRenderJumpMeter", at = @At(value = "RETURN"))
-    private void drawEndJumpMeter(DrawContext arg, RenderTickCounter arg2, CallbackInfo ci) {
+    private void drawEndJumpMeter(CallbackInfo ci) {
         OverlayRenderer.endDraw(AllDefaultOverlayComponents.mainHud);
     }
 
     @Inject(method = "maybeRenderExperienceBar", at = @At(value = "HEAD"))
-    private void drawStartExperienceBar(DrawContext arg, RenderTickCounter arg2, CallbackInfo ci) {
+    private void drawStartExperienceBar(CallbackInfo ci) {
         OverlayRenderer.beginDraw(AllDefaultOverlayComponents.mainHud);
     }
 
     @Inject(method = "maybeRenderExperienceBar", at = @At(value = "RETURN"))
-    private void drawEndExperienceBar(DrawContext arg, RenderTickCounter arg2, CallbackInfo ci) {
+    private void drawEndExperienceBar(CallbackInfo ci) {
         OverlayRenderer.endDraw(AllDefaultOverlayComponents.mainHud);
     }
 
     @Inject(method = "renderHealthLevel", at = @At(value = "HEAD"))
-    private void drawStartPlayerHealth(DrawContext arg, CallbackInfo ci) {
+    private void drawStartPlayerHealth(CallbackInfo ci) {
         OverlayRenderer.beginDraw(AllDefaultOverlayComponents.mainHud);
     }
 
     @Inject(method = "renderHealthLevel", at = @At(value = "RETURN"))
-    private void drawEndPlayerHealth(DrawContext arg, CallbackInfo ci) {
+    private void drawEndPlayerHealth(CallbackInfo ci) {
         OverlayRenderer.endDraw(AllDefaultOverlayComponents.mainHud);
     }
 
     @Inject(method = "renderArmorLevel", at = @At(value = "HEAD"))
-    private void drawStartPlayerArmor(DrawContext arg, CallbackInfo ci) {
+    private void drawStartPlayerArmor(CallbackInfo ci) {
         OverlayRenderer.beginDraw(AllDefaultOverlayComponents.mainHud);
     }
 
     @Inject(method = "renderArmorLevel", at = @At(value = "RETURN"))
-    private void drawEndPlayerArmor(DrawContext arg, CallbackInfo ci) {
+    private void drawEndPlayerArmor(CallbackInfo ci) {
         OverlayRenderer.endDraw(AllDefaultOverlayComponents.mainHud);
     }
 
     @Inject(method = "renderFoodLevel", at = @At(value = "HEAD"))
-    private void drawStartPlayerFood(DrawContext arg, CallbackInfo ci) {
+    private void drawStartPlayerFood(CallbackInfo ci) {
         OverlayRenderer.beginDraw(AllDefaultOverlayComponents.mainHud);
     }
 
     @Inject(method = "renderFoodLevel", at = @At(value = "RETURN"))
-    private void drawEndPlayerFood(DrawContext arg, CallbackInfo ci) {
+    private void drawEndPlayerFood(CallbackInfo ci) {
         OverlayRenderer.endDraw(AllDefaultOverlayComponents.mainHud);
     }
 
     @Inject(method = "maybeRenderVehicleHealth", at = @At(value = "HEAD"))
-    private void drawStartVehicleHealth(DrawContext arg, RenderTickCounter arg2, CallbackInfo ci) {
+    private void drawStartVehicleHealth(CallbackInfo ci) {
         OverlayRenderer.beginDraw(AllDefaultOverlayComponents.mainHud);
     }
 
     @Inject(method = "maybeRenderVehicleHealth", at = @At(value = "RETURN"))
-    private void drawEndVehicleHealth(DrawContext arg, RenderTickCounter arg2, CallbackInfo ci) {
+    private void drawEndVehicleHealth(CallbackInfo ci) {
         OverlayRenderer.endDraw(AllDefaultOverlayComponents.mainHud);
     }
 
     @Inject(method = "maybeRenderSelectedItemName", at = @At(value = "HEAD"))
-    private void drawStartSelectedItemName(DrawContext arg, RenderTickCounter arg2, CallbackInfo ci) {
+    private void drawStartSelectedItemName(CallbackInfo ci) {
         OverlayRenderer.beginDraw(AllDefaultOverlayComponents.mainHud);
     }
 
     @Inject(method = "maybeRenderSelectedItemName", at = @At(value = "RETURN"))
-    private void drawEndSelectedItemName(DrawContext arg, RenderTickCounter arg2, CallbackInfo ci) {
+    private void drawEndSelectedItemName(CallbackInfo ci) {
         OverlayRenderer.endDraw(AllDefaultOverlayComponents.mainHud);
     }
 
     @Inject(method = "maybeRenderSpectatorTooltip", at = @At(value = "HEAD"))
-    private void drawStartSpectatorTooltip(DrawContext arg, RenderTickCounter arg2, CallbackInfo ci) {
+    private void drawStartSpectatorTooltip(CallbackInfo ci) {
         OverlayRenderer.beginDraw(AllDefaultOverlayComponents.mainHud);
     }
 
     @Inject(method = "maybeRenderSpectatorTooltip", at = @At(value = "RETURN"))
-    private void drawEndSpectatorTooltip(DrawContext arg, RenderTickCounter arg2, CallbackInfo ci) {
+    private void drawEndSpectatorTooltip(CallbackInfo ci) {
         OverlayRenderer.endDraw(AllDefaultOverlayComponents.mainHud);
     }
 
