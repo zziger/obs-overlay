@@ -42,13 +42,33 @@ public class InGameHudMixin {
         OverlayRenderer.endDraw(AllDefaultOverlayComponents.mainHud);
     }
 
-    @Inject(method = "maybeRenderPlayerHealth", at = @At(value = "HEAD"))
-    private void drawStartPlayerHealth(DrawContext arg, RenderTickCounter arg2, CallbackInfo ci) {
+    @Inject(method = "renderHealthLevel", at = @At(value = "HEAD"))
+    private void drawStartPlayerHealth(DrawContext arg, CallbackInfo ci) {
         OverlayRenderer.beginDraw(AllDefaultOverlayComponents.mainHud);
     }
 
-    @Inject(method = "maybeRenderPlayerHealth", at = @At(value = "RETURN"))
-    private void drawEndPlayerHealth(DrawContext arg, RenderTickCounter arg2, CallbackInfo ci) {
+    @Inject(method = "renderHealthLevel", at = @At(value = "RETURN"))
+    private void drawEndPlayerHealth(DrawContext arg, CallbackInfo ci) {
+        OverlayRenderer.endDraw(AllDefaultOverlayComponents.mainHud);
+    }
+
+    @Inject(method = "renderArmorLevel", at = @At(value = "HEAD"))
+    private void drawStartPlayerArmor(DrawContext arg, CallbackInfo ci) {
+        OverlayRenderer.beginDraw(AllDefaultOverlayComponents.mainHud);
+    }
+
+    @Inject(method = "renderArmorLevel", at = @At(value = "RETURN"))
+    private void drawEndPlayerArmor(DrawContext arg, CallbackInfo ci) {
+        OverlayRenderer.endDraw(AllDefaultOverlayComponents.mainHud);
+    }
+
+    @Inject(method = "renderFoodLevel", at = @At(value = "HEAD"))
+    private void drawStartPlayerFood(DrawContext arg, CallbackInfo ci) {
+        OverlayRenderer.beginDraw(AllDefaultOverlayComponents.mainHud);
+    }
+
+    @Inject(method = "renderFoodLevel", at = @At(value = "RETURN"))
+    private void drawEndPlayerFood(DrawContext arg, CallbackInfo ci) {
         OverlayRenderer.endDraw(AllDefaultOverlayComponents.mainHud);
     }
 
