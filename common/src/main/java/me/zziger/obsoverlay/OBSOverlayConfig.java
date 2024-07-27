@@ -152,7 +152,7 @@ public class OBSOverlayConfig implements ConfigData {
                     .setErrorSupplier(list -> {
                         for (String id : list) {
                             try {
-                                if (!Registries.SCREEN_HANDLER.containsId(Identifier.of(id)))
+                                if (!Registries.SCREEN_HANDLER.containsId(new Identifier(id)))
                                     return Optional.of(Text.translatable("obs_overlay.config.screen_doesnt_exist", id));
                             } catch(Exception e) {
                                 return Optional.of(Text.translatable("obs_overlay.config.screen_doesnt_exist", id));

@@ -1,9 +1,9 @@
-name: Build and Release (1.21)
+name: Build and Release (1.20)
 
 on:
   push:
     tags:
-      - '1.21\/*.*.*'
+      - '1.20\/*.*.*'
 
 jobs:
   build:
@@ -12,10 +12,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Set up JDK 21
+      - name: Set up JDK 17
         uses: actions/setup-java@v2
         with:
-          java-version: 21
+          java-version: 17
           distribution: 'temurin'
 
       - name: Make Gradle executable

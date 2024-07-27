@@ -83,11 +83,17 @@ public class OverlayRenderer {
             ShaderProgram shaderProgram = (ShaderProgram) Objects.requireNonNull(minecraftClient.gameRenderer.blitScreenProgram, "Blit shader not loaded");
             shaderProgram.addSampler("DiffuseSampler", overlayFramebuffer.getColorAttachment());
             shaderProgram.bind();
-            BufferBuilder bufferBuilder = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.BLIT_SCREEN);
-            bufferBuilder.vertex(0.0F, 0.0F, 0.0F);
-            bufferBuilder.vertex(1.0F, 0.0F, 0.0F);
-            bufferBuilder.vertex(1.0F, 1.0F, 0.0F);
-            bufferBuilder.vertex(0.0F, 1.0F, 0.0F);
+            Tessellator tessellator = RenderSystem.renderThreadTesselator();
+            BufferBuilder bufferBuilder = tessellator.getBuffer();
+            float f = (float)minecraftClient.getWindow().getFramebufferWidth();
+            float g = (float)minecraftClient.getWindow().getFramebufferHeight();
+            float h = (float)overlayFramebuffer.viewportWidth / (float)overlayFramebuffer.textureWidth;
+            float i = (float)overlayFramebuffer.viewportHeight / (float)overlayFramebuffer.textureHeight;
+            bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
+            bufferBuilder.vertex(0.0, (double)g, 0.0).texture(0.0F, 0.0F).color(255, 255, 255, 255).next();
+            bufferBuilder.vertex((double)f, (double)g, 0.0).texture(h, 0.0F).color(255, 255, 255, 255).next();
+            bufferBuilder.vertex((double)f, 0.0, 0.0).texture(h, i).color(255, 255, 255, 255).next();
+            bufferBuilder.vertex(0.0, 0.0, 0.0).texture(0.0F, i).color(255, 255, 255, 255).next();
             BufferRenderer.draw(bufferBuilder.end());
             shaderProgram.unbind();
         }

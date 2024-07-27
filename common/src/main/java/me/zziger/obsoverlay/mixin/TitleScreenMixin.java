@@ -17,7 +17,7 @@ public class TitleScreenMixin {
     private void drawStart(DrawContext context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
         if (OBSOverlay.libraryInitialized) return;
 
-        context.drawGuiTexture(Identifier.ofVanilla("container/beacon/cancel"), 0, 0, 15, 15);
+        context.drawGuiTexture(Identifier.of("minecraft", "container/beacon/cancel"), 0, 0, 15, 15);
         context.drawText(MinecraftClient.getInstance().textRenderer, Text.translatable("obs_overlay.failed_to_init"), 17, 4, 0xFFFFFF, true);
     }
 }
