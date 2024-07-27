@@ -44,8 +44,12 @@ jobs:
       - name: Create package name
         run: echo "package_name=$mod_version - Minecraft $supported_version" >> $GITHUB_ENV
 
-      - name: Rename JARs
-        run: ls ./*/build/libs/*.jar | sed 's/.jar$//g' | xargs -i mv {}{.jar,-$minecraft_version.jar}
+      - name: Prepare JARs
+        run: |
+          rm -rf ./*/build/libs/*-dev.jar
+          rm -rf ./*/build/libs/*-shadow.jar
+          rm -rf ./*/build/libs/*-transformProduction*.jar
+          ls ./*/build/libs/*.jar | sed 's/.jar$//g' | xargs -i mv {}{.jar,-$minecraft_version.jar}
 
       - name: Create release
         uses: softprops/action-gh-release@v2
@@ -57,7 +61,7 @@ jobs:
           generate_release_notes: true
           fail_on_unmatched_files: true
           files: |
-            */build/libs/!(*-dev|*-shadow|*-transformProduction*).jar
+            */build/libs/*.jar
 
       - name: Release to Modrinth and CurseForge
         uses: gradle/gradle-build-action@v2
