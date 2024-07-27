@@ -1,9 +1,9 @@
-name: Build and Release (1.20)
+name: Build and Release (1.20.5-1.20.6)
 
 on:
   push:
     tags:
-      - '1.20\/*.*.*'
+      - '1.20.5\/*.*.*'
 
 jobs:
   build:
@@ -12,10 +12,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Set up JDK 17
+      - name: Set up JDK 21
         uses: actions/setup-java@v2
         with:
-          java-version: 17
+          java-version: 21
           distribution: 'temurin'
 
       - name: Make Gradle executable
@@ -33,6 +33,7 @@ jobs:
         run: |
           cat gradle.properties | grep ^mod_version | sed -e 's/ //g' >> $GITHUB_ENV
           cat gradle.properties | grep ^minecraft_version | sed -e 's/ //g' >> $GITHUB_ENV
+          cat gradle.properties | grep ^supported_version | sed -e 's/ //g' >> $GITHUB_ENV
 
       - name: Validate Mod version
         uses: nick-fields/assert-action@v2
@@ -41,7 +42,10 @@ jobs:
           actual: '${{ env.minecraft_version }}/${{ env.mod_version }}'
 
       - name: Create package name
-        run: echo "package_name=$mod_version - Minecraft $minecraft_version" >> $GITHUB_ENV
+        run: echo "package_name=$mod_version - Minecraft $supported_version" >> $GITHUB_ENV
+
+      - name: Rename JARs
+        run: ls ./*/build/libs/!(*-dev|*-shadow|*-transformProduction*).jar | sed 's/.jar$//g' | xargs -i mv {}{.jar,-$minecraft_version.jar}
 
       - name: Create release
         uses: softprops/action-gh-release@v2
