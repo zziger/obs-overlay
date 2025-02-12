@@ -35,15 +35,15 @@
     "obs_overlay.mixins.json",
     "obs_overlay.fabric.mixins.json"
   ],
-  "depends": {
+ "depends": {
     "fabricloader": ">=0.15.6",
-    "minecraft": "~1.21",
+    "minecraft": "~1.20.4",  
     "java": ">=21",
     "architectury": ">=13.0.2",
     "cloth-config": ">=15.0.127",
     "fabric-api": "*"
-  },
-  "suggests": {
+}
+   ,"suggests":{
     "modmenu": "*"
   }
 }
