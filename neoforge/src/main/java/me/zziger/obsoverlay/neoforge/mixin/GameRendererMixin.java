@@ -20,7 +20,7 @@ public class GameRendererMixin {
     }
 
     @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/neoforged/neoforge/client/ClientHooks;drawScreen(Lnet/minecraft/client/gui/screen/Screen;Lnet/minecraft/client/gui/DrawContext;IIF)V", shift = At.Shift.AFTER))
-    private void afterScreenRender(RenderTickCounter tickCounter, boolean tick, CallbackInfo ci, @Local(index = 9) DrawContext context) {
+    private void afterScreenRender(RenderTickCounter tickCounter, boolean tick, CallbackInfo ci, @Local(index = 10) DrawContext context) {
         Screen screen = ((GameRenderer) (Object) this).getClient().currentScreen;
         if (screen != null) OBSOverlay.afterScreenRender(screen, context);
     }

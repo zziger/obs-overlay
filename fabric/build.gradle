@@ -1,5 +1,5 @@
 plugins {
-    id 'com.github.johnrengelman.shadow'
+    id 'com.gradleup.shadow'
     id "me.shedaniel.unified-publishing" version "0.1.+"
 }
 
@@ -65,7 +65,7 @@ unifiedPublishing {
     project {
         displayName = "[Fabric $rootProject.supported_version] v$rootProject.mod_version"
         releaseType = "release"
-        gameVersions = ["1.21"]
+        gameVersions = ["1.21.4"]
         gameLoaders = ["fabric"]
 
         mainPublication remapJar

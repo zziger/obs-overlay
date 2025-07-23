@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(Screen.class)
 public class ScreenMixin {
     @Inject(method = "applyBlur", at = @At("HEAD"), cancellable = true)
-    private void renderBlur(float delta, CallbackInfo ci) {
+    private void renderBlur(CallbackInfo ci) {
         if (OverlayUtils.isScreenOverlayed((Screen) (Object) this))
             ci.cancel();
     }

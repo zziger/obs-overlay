@@ -64,7 +64,7 @@ public final class OBSOverlay {
         boolean overlay = OverlayUtils.isScreenOverlayed(instance);
         if (overlay) {
             OverlayRenderer.beginDraw();
-            RenderSystem.clear(256, MinecraftClient.IS_SYSTEM_MAC);
+            RenderSystem.clear(256);
         }
     }
 
