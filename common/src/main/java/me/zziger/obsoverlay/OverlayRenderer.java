@@ -103,13 +103,13 @@ public class OverlayRenderer {
         overlayFramebuffer.clear();
     }
 
-    static BufferAllocator alloc = new BufferAllocator(786432);
-    static ShaderProgram shaderProgram;
 
     public static void renderFrame() {
         MinecraftClient client = MinecraftClient.getInstance();
 
         if (overlayFramebuffer != null && framebufferDirty) {
+
+            ShaderProgram shaderProgram;
 
             try {
                 shaderProgram = client.getShaderLoader().getProgramToLoad(POSITION_TEX);
@@ -125,12 +125,13 @@ public class OverlayRenderer {
             GlStateManager._disableCull();
             GlStateManager._blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             GlStateManager._viewport(0, 0, client.getWindow().getFramebufferWidth(), client.getWindow().getFramebufferHeight());
-            GlStateManager._glBindFramebuffer(GL_FRAMEBUFFER, 0);
+            GlStateManager._glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 
+            shaderProgram.initializeUniforms(VertexFormat.DrawMode.QUADS, new Matrix4f().identity(), new Matrix4f().identity(), client.getWindow());
             shaderProgram.addSamplerTexture("Sampler0", overlayFramebuffer.getColorAttachment());
             shaderProgram.bind();
 
-            BufferBuilder bufferBuilder = new BufferBuilder(alloc, VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
+            BufferBuilder bufferBuilder = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
             bufferBuilder.vertex(-1.0f, -1.0f, 0.0F).texture(0, 0);
             bufferBuilder.vertex(1.0f, -1.0f, 0.0F).texture(1, 0);
             bufferBuilder.vertex(1.0f, 1.0f, 0.0F).texture(1, 1);
