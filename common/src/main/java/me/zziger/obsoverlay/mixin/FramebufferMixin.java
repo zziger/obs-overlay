@@ -16,6 +16,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class FramebufferMixin {
     @Inject(method = "_glBindFramebuffer(II)V", at=@At(value = "HEAD"), cancellable = true)
     private static void bindFramebuffer(int target, int framebuffer, CallbackInfo ci) {
-        if (OverlayRenderer.isFramebufferOverridden()) ci.cancel();
+        OverlayRenderer renderer = OBSOverlay.getRenderer();
+        if (renderer != null && renderer.isFramebufferOverridden()) ci.cancel();
     }
 }

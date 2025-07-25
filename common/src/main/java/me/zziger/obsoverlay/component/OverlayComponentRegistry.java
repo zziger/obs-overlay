@@ -1,4 +1,4 @@
-package me.zziger.obsoverlay.registry;
+package me.zziger.obsoverlay.component;
 
 import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.gui.screen.GameMenuScreen;
@@ -13,7 +13,7 @@ import java.util.stream.Stream;
 
 public class OverlayComponentRegistry {
 
-    public static ArrayList<OverlayComponent> components = new ArrayList<>();
+    public static ArrayList<IOverlayComponent> components = new ArrayList<>();
     public static ArrayList<Class<?>> ignoredScreens = new ArrayList<>(List.of(ChatScreen.class));
     public static HashMap<String, Class<?>> hideableScreens = new HashMap<>() {{
         put("inventory", InventoryScreen.class);
@@ -22,12 +22,12 @@ public class OverlayComponentRegistry {
         put("command_block", CommandBlockScreen.class);
     }};
 
-    public static OverlayComponent registerComponent(OverlayComponent component) {
+    public static IOverlayComponent registerComponent(IOverlayComponent component) {
         components.add(component);
         return component;
     }
 
-    public static void registerComponents(OverlayComponent... components) {
+    public static void registerComponents(IOverlayComponent... components) {
         Stream.of(components).forEach(OverlayComponentRegistry::registerComponent);
     }
 

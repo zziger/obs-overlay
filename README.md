@@ -1,7 +1,7 @@
 <img src="fabric/src/main/resources/assets/obs_overlay/icon.png" alt="Logo" height="128" />
 
 # OBS Overlay
-#### Hide HUD elements from OBS stream by making them an overlay.
+#### Hide things from OBS stream by making them an overlay.
 **[Modrinth &nearr;](https://modrinth.com/mod/obs-overlay)** • **[CurseForge &nearr;](https://www.curseforge.com/minecraft/mc-mods/obs-overlay)** • **[Got an issue?](../../issues/new)**
 <br><br>
 <br/>
@@ -24,8 +24,19 @@ At the moment only **Windows** is supported.
 
 This mod lets you hide any combination of the following components:
 
+### In-world elements
+
+- Text on signs
+- Maps
+- Chests
+- Banner patterns
+- Beacon
+
+### HUD elements
+
+- Name tags
 - Debug menu (F3)
-- Chat (without input bar)
+- Chat (excluding input bar)
 - Chat input bar
 - Player list (TAB)
 - Subtitles (accessibility)

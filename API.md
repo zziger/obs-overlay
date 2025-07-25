@@ -19,15 +19,15 @@ dependencies {
 
 ## Usage
 
-Most of the API is accessible through `me.zziger.obsoverlay.OverlayRenderer` and `me.zziger.obsoverlay.registry.OverlayComponentRegistry` classes.
+Most of the API is accessible through `me.zziger.obsoverlay.OverlayRenderer` and `me.zziger.obsoverlay.component.OverlayComponentRegistry` classes.
 ### Drawing to an overlay
 
 In order to draw your own HUD components to the overlay, you need to wrap your rendering code with following methods:
 
 ```java
-OverlayRenderer.beginDraw();
+OBSOverlay.getAPI().beginDraw();
 // Your rendering code here
-OverlayRenderer.endDraw();
+OBSOverlay.getAPI().endDraw();
 ```
 
 This internally swaps the framebuffer to a custom one, that will be rendered at a later stage.\
@@ -43,7 +43,7 @@ If you have your own `OverlayComponent` class you can pass it to `beginDraw`/`en
 
 You will also need to define `obs_overlay.component.your_component_id` and `obs_overlay.component.your_component_id.tooltip` localization keys.
 
-For example check [ChatHudMixin](common/src/main/java/me/zziger/obsoverlay/mixin/hud/ChatHudMixin.java) and [DefaultOverlayComponent](common/src/main/java/me/zziger/obsoverlay/registry/DefaultOverlayComponent.java).
+For example check [ChatHudMixin](common/src/main/java/me/zziger/obsoverlay/mixin/components/ChatHudMixin.java) and [DefaultOverlayComponent](common/src/main/java/me/zziger/obsoverlay/component/DefaultOverlayComponent.java).
 
 ### Adding your own overlayable screens to settings
 

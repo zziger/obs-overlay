@@ -1,87 +1,68 @@
 package me.zziger.obsoverlay;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import dev.architectury.platform.Platform;
-import me.zziger.obsoverlay.registry.AllDefaultOverlayComponents;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.Screen;
-import org.apache.commons.io.IOUtils;
+import me.zziger.obsoverlay.api.IOverlayAPI;
+import me.zziger.obsoverlay.api.impl.DummyOverlayAPI;
+import me.zziger.obsoverlay.api.impl.NormalOverlayAPI;
+import me.zziger.obsoverlay.compat.ImmediatelyFastCompat;
+import me.zziger.obsoverlay.component.AllDefaultOverlayComponents;
+import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 
 public final class OBSOverlay {
     public static final String MOD_ID = "obs_overlay";
     public static final Logger LOGGER = LoggerFactory.getLogger("obs_overlay");
 
-    public static boolean libraryInitialized = false;
-
-    public static boolean initLibrary() {
-        if (!System.getProperty("os.name").toLowerCase().contains("win")) {
-            OBSOverlay.LOGGER.error("OBS Overlay is only supported on Windows");
-            return false;
-        }
-
-        String arch = System.getProperty("os.arch").toLowerCase();
-
-        if (arch.contains("aarch")) {
-            OBSOverlay.LOGGER.error("OBS Overlay is only supported on x64 and x86 systems");
-            return false;
-        }
-
-        boolean is64 = arch.equals("x86_64") || arch.equals("amd64") || arch.equals("x64") || arch.equals("ia64");
-        InputStream libFile = OBSOverlay.class.getResourceAsStream(is64 ? "/lib/MinHook.x64.dll" : "/lib/MinHook.x86.dll");
-        if (libFile == null) {
-            OBSOverlay.LOGGER.error("Failed to get MinHook.x64.dll dependency");
-            return false;
-        }
-
-        File nativeDir = new File(Platform.getGameFolder().toAbsolutePath().toString().concat("/native"));
-        File copyLibFile = new File(Platform.getGameFolder().toAbsolutePath().toString().concat("/native/MinHook.dll"));
-        nativeDir.mkdir();
-
-        try {
-            FileOutputStream fos = new FileOutputStream(copyLibFile);
-            copyLibFile.createNewFile();
-            IOUtils.copy(libFile, fos);
-            fos.close();
-        } catch (IOException e) {
-            OBSOverlay.LOGGER.error("Failed to copy dependency DLL");
-            return false;
-        }
-
-        System.setProperty("jna.library.path", nativeDir.getAbsolutePath());
-        OBSOverlay.LOGGER.info("Copied dependency DLL successfully");
-        return true;
+    public static Identifier id(String path) {
+        return Identifier.of(MOD_ID, path);
     }
 
-    public static void beforeScreenRender(Screen instance) {
-        boolean overlay = OverlayUtils.isScreenOverlayed(instance);
-        if (overlay) {
-            OverlayRenderer.beginDraw();
-            RenderSystem.clear(256);
-        }
+    private static OverlayRenderer renderer = null;
+    private static IOverlayAPI api = new DummyOverlayAPI();
+    private static boolean initialized = false;
+
+    public static boolean getIsInitialized() {
+        return initialized;
     }
 
-    public static void afterScreenRender(Screen instance, DrawContext context) {
-        context.draw();
-        boolean overlay = OverlayUtils.isScreenOverlayed(instance);
-        if (overlay) {
-            OverlayRenderer.endDraw();
-        }
+    /**
+     * This method can be invoked even if mode is not initialized.
+     * Call this method each time you need the API, do not cache the result.
+     * If the library is not initialized - it will return a dummy API instance, which does nothing
+     * @return API instance
+     */
+    public static IOverlayAPI getAPI() {
+        return api;
     }
 
+    /**
+     * This method can return internal renderer instance, null if not initialized
+     * If possible, better use {@link #getAPI()} instead.
+     * @return Internal renderer instance, or null if renderer is not initialized
+     */
+    @Nullable
+    public static OverlayRenderer getRenderer() {
+        return renderer;
+    }
 
     public static void init() {
-        if (initLibrary()) libraryInitialized = true;
-        else OBSOverlay.LOGGER.error("Failed to initialize OBS Overlay library");
-
         OBSOverlayConfig.init();
         AllDefaultOverlayComponents.init();
+    }
+
+    public static void initRender() {
+        try {
+            renderer = new OverlayRenderer();
+            api = new NormalOverlayAPI(renderer);
+            initialized = true;
+        } catch (Throwable e) {
+            LOGGER.error("Failed to initialize OBS Overlay render", e);
+            OverlayUtils.showToast(Text.literal("Failed to initialize OBS Overlay"), Text.literal(e.getMessage()));
+
+            renderer = null;
+            api = new DummyOverlayAPI();
+        }
     }
 }

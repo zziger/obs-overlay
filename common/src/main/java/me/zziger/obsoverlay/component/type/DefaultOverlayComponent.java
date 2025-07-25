@@ -1,25 +1,28 @@
-package me.zziger.obsoverlay.registry;
+package me.zziger.obsoverlay.component.type;
 
 import me.zziger.obsoverlay.OBSOverlayConfig;
+import me.zziger.obsoverlay.component.IOverlayComponent;
+import me.zziger.obsoverlay.component.OverlayComponentRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.util.Identifier;
 
-public class DefaultOverlayComponent implements OverlayComponent {
-    private final String id;
+public class DefaultOverlayComponent implements IOverlayComponent {
+    private final Identifier id;
     private final boolean canAutoHide;
     private final boolean defaultOverlay;
 
     private boolean overlay;
     private boolean autoHide;
 
-    public DefaultOverlayComponent(String id, boolean defaultOverlay, boolean canAutoHide) {
+    public DefaultOverlayComponent(Identifier id, boolean defaultOverlay, boolean canAutoHide) {
         this.id = id;
         this.canAutoHide = canAutoHide;
         this.defaultOverlay = defaultOverlay;
 
         OBSOverlayConfig config = OBSOverlayConfig.get();
-        overlay = config.overlayComponents.getOrDefault(id, defaultOverlay);
-        autoHide = canAutoHide ? config.autoHideComponents.getOrDefault(id, true) : false;
+        overlay = config.overlayComponents.getOrDefault(getId(), defaultOverlay);
+        autoHide = canAutoHide ? config.autoHideComponents.getOrDefault(getId(), true) : false;
     }
 
     @Override
@@ -29,7 +32,7 @@ public class DefaultOverlayComponent implements OverlayComponent {
 
     @Override
     public String getId() {
-        return id;
+        return id.toTranslationKey();
     }
 
     @Override
@@ -45,7 +48,7 @@ public class DefaultOverlayComponent implements OverlayComponent {
     @Override
     public void setOverlayEnabled(boolean value) {
         this.overlay = value;
-        OBSOverlayConfig.get().overlayComponents.put(id, value);
+        OBSOverlayConfig.get().overlayComponents.put(getId(), value);
     }
 
     @Override
@@ -57,7 +60,7 @@ public class DefaultOverlayComponent implements OverlayComponent {
     public void setAutoHideEnabled(boolean value) {
         if (!canAutoHide) return;
         this.autoHide = value;
-        OBSOverlayConfig.get().autoHideComponents.put(id, value);
+        OBSOverlayConfig.get().autoHideComponents.put(getId(), value);
     }
 
     @Override

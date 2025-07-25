@@ -1,7 +1,8 @@
 package me.zziger.obsoverlay.neoforge.mixin;
 
+import me.zziger.obsoverlay.OBSOverlay;
 import me.zziger.obsoverlay.OverlayRenderer;
-import me.zziger.obsoverlay.registry.AllDefaultOverlayComponents;
+import me.zziger.obsoverlay.component.AllDefaultOverlayComponents;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.render.RenderTickCounter;
@@ -15,109 +16,109 @@ public class InGameHudMixin {
     @Inject(method = "renderHotbar", at = @At(value = "HEAD"))
     private void drawStartHotbar(DrawContext arg, RenderTickCounter arg2, CallbackInfo ci) {
         arg.draw();
-        OverlayRenderer.beginDraw(AllDefaultOverlayComponents.mainHud);
+        OBSOverlay.getAPI().beginDraw(AllDefaultOverlayComponents.mainHud);
     }
 
     @Inject(method = "renderHotbar", at = @At(value = "RETURN"))
     private void drawEndHotbar(DrawContext arg, RenderTickCounter arg2, CallbackInfo ci) {
         arg.draw();
-        OverlayRenderer.endDraw(AllDefaultOverlayComponents.mainHud);
+        OBSOverlay.getAPI().endDraw(AllDefaultOverlayComponents.mainHud);
     }
 
     @Inject(method = "maybeRenderJumpMeter", at = @At(value = "HEAD"))
     private void drawStartJumpMeter(DrawContext arg, RenderTickCounter arg2, CallbackInfo ci) {
         arg.draw();
-        OverlayRenderer.beginDraw(AllDefaultOverlayComponents.mainHud);
+        OBSOverlay.getAPI().beginDraw(AllDefaultOverlayComponents.mainHud);
     }
 
     @Inject(method = "maybeRenderJumpMeter", at = @At(value = "RETURN"))
     private void drawEndJumpMeter(DrawContext arg, RenderTickCounter arg2, CallbackInfo ci) {
         arg.draw();
-        OverlayRenderer.endDraw(AllDefaultOverlayComponents.mainHud);
+        OBSOverlay.getAPI().endDraw(AllDefaultOverlayComponents.mainHud);
     }
 
     @Inject(method = "maybeRenderExperienceBar", at = @At(value = "HEAD"))
     private void drawStartExperienceBar(DrawContext arg, RenderTickCounter arg2, CallbackInfo ci) {
         arg.draw();
-        OverlayRenderer.beginDraw(AllDefaultOverlayComponents.mainHud);
+        OBSOverlay.getAPI().beginDraw(AllDefaultOverlayComponents.mainHud);
     }
 
     @Inject(method = "maybeRenderExperienceBar", at = @At(value = "RETURN"))
     private void drawEndExperienceBar(DrawContext arg, RenderTickCounter arg2, CallbackInfo ci) {
         arg.draw();
-        OverlayRenderer.endDraw(AllDefaultOverlayComponents.mainHud);
+        OBSOverlay.getAPI().endDraw(AllDefaultOverlayComponents.mainHud);
     }
 
     @Inject(method = "renderHealthLevel", at = @At(value = "HEAD"))
     private void drawStartPlayerHealth(DrawContext arg, CallbackInfo ci) {
         arg.draw();
-        OverlayRenderer.beginDraw(AllDefaultOverlayComponents.mainHud);
+        OBSOverlay.getAPI().beginDraw(AllDefaultOverlayComponents.mainHud);
     }
 
     @Inject(method = "renderHealthLevel", at = @At(value = "RETURN"))
     private void drawEndPlayerHealth(DrawContext arg, CallbackInfo ci) {
         arg.draw();
-        OverlayRenderer.endDraw(AllDefaultOverlayComponents.mainHud);
+        OBSOverlay.getAPI().endDraw(AllDefaultOverlayComponents.mainHud);
     }
 
     @Inject(method = "renderArmorLevel", at = @At(value = "HEAD"))
     private void drawStartPlayerArmor(DrawContext arg, CallbackInfo ci) {
         arg.draw();
-        OverlayRenderer.beginDraw(AllDefaultOverlayComponents.mainHud);
+        OBSOverlay.getAPI().beginDraw(AllDefaultOverlayComponents.mainHud);
     }
 
     @Inject(method = "renderArmorLevel", at = @At(value = "RETURN"))
     private void drawEndPlayerArmor(DrawContext arg, CallbackInfo ci) {
         arg.draw();
-        OverlayRenderer.endDraw(AllDefaultOverlayComponents.mainHud);
+        OBSOverlay.getAPI().endDraw(AllDefaultOverlayComponents.mainHud);
     }
 
     @Inject(method = "renderFoodLevel", at = @At(value = "HEAD"))
     private void drawStartPlayerFood(DrawContext arg, CallbackInfo ci) {
         arg.draw();
-        OverlayRenderer.beginDraw(AllDefaultOverlayComponents.mainHud);
+        OBSOverlay.getAPI().beginDraw(AllDefaultOverlayComponents.mainHud);
     }
 
     @Inject(method = "renderFoodLevel", at = @At(value = "RETURN"))
     private void drawEndPlayerFood(DrawContext arg, CallbackInfo ci) {
         arg.draw();
-        OverlayRenderer.endDraw(AllDefaultOverlayComponents.mainHud);
+        OBSOverlay.getAPI().endDraw(AllDefaultOverlayComponents.mainHud);
     }
 
     @Inject(method = "maybeRenderVehicleHealth", at = @At(value = "HEAD"))
     private void drawStartVehicleHealth(DrawContext arg, RenderTickCounter arg2, CallbackInfo ci) {
         arg.draw();
-        OverlayRenderer.beginDraw(AllDefaultOverlayComponents.mainHud);
+        OBSOverlay.getAPI().beginDraw(AllDefaultOverlayComponents.mainHud);
     }
 
     @Inject(method = "maybeRenderVehicleHealth", at = @At(value = "RETURN"))
     private void drawEndVehicleHealth(DrawContext arg, RenderTickCounter arg2, CallbackInfo ci) {
         arg.draw();
-        OverlayRenderer.endDraw(AllDefaultOverlayComponents.mainHud);
+        OBSOverlay.getAPI().endDraw(AllDefaultOverlayComponents.mainHud);
     }
 
     @Inject(method = "maybeRenderSelectedItemName", at = @At(value = "HEAD"))
     private void drawStartSelectedItemName(DrawContext arg, RenderTickCounter arg2, CallbackInfo ci) {
         arg.draw();
-        OverlayRenderer.beginDraw(AllDefaultOverlayComponents.mainHud);
+        OBSOverlay.getAPI().beginDraw(AllDefaultOverlayComponents.mainHud);
     }
 
     @Inject(method = "maybeRenderSelectedItemName", at = @At(value = "RETURN"))
     private void drawEndSelectedItemName(DrawContext arg, RenderTickCounter arg2, CallbackInfo ci) {
         arg.draw();
-        OverlayRenderer.endDraw(AllDefaultOverlayComponents.mainHud);
+        OBSOverlay.getAPI().endDraw(AllDefaultOverlayComponents.mainHud);
     }
 
     @Inject(method = "maybeRenderSpectatorTooltip", at = @At(value = "HEAD"))
     private void drawStartSpectatorTooltip(DrawContext arg, RenderTickCounter arg2, CallbackInfo ci) {
         arg.draw();
-        OverlayRenderer.beginDraw(AllDefaultOverlayComponents.mainHud);
+        OBSOverlay.getAPI().beginDraw(AllDefaultOverlayComponents.mainHud);
     }
 
     @Inject(method = "maybeRenderSpectatorTooltip", at = @At(value = "RETURN"))
     private void drawEndSpectatorTooltip(DrawContext arg, RenderTickCounter arg2, CallbackInfo ci) {
         arg.draw();
-        OverlayRenderer.endDraw(AllDefaultOverlayComponents.mainHud);
+        OBSOverlay.getAPI().endDraw(AllDefaultOverlayComponents.mainHud);
     }
 
 }

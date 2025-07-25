@@ -13,8 +13,10 @@ import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import me.shedaniel.clothconfig2.api.Requirement;
 import me.shedaniel.clothconfig2.gui.entries.BooleanListEntry;
 import me.shedaniel.clothconfig2.impl.builders.SubCategoryBuilder;
-import me.zziger.obsoverlay.registry.OverlayComponentRegistry;
+import me.zziger.obsoverlay.component.OverlayComponentRegistry;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -223,5 +225,23 @@ public class OBSOverlayConfig implements ConfigData {
 
             return builder.build();
         };
+    }
+
+    public static boolean isScreenOverlayed(Screen screen) {
+        OBSOverlayConfig config = OBSOverlayConfig.get();
+
+        if (config.hideAllScreens && MinecraftClient.getInstance().world != null) return true;
+        if (config.overlayScreensClasses.contains(screen.getClass())) return true;
+        if (config.overlayHandledScreensEnabled) {
+            if (screen instanceof HandledScreen<?> handledScreen) {
+                try {
+                    Identifier id = Registries.SCREEN_HANDLER.getId(handledScreen.getScreenHandler().getType());
+                    if (id != null && (config.overlayHandledScreensList.contains(id.toString()) || config.overlayHandledScreensList.contains(id.getPath())))
+                        return true;
+                } catch (Exception ignored) {
+                }
+            }
+        }
+        return false;
     }
 }

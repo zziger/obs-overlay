@@ -1,7 +1,7 @@
-package me.zziger.obsoverlay.mixin.hud;
+package me.zziger.obsoverlay.mixin.components;
 
-import me.zziger.obsoverlay.OverlayRenderer;
-import me.zziger.obsoverlay.registry.AllDefaultOverlayComponents;
+import me.zziger.obsoverlay.OBSOverlay;
+import me.zziger.obsoverlay.component.AllDefaultOverlayComponents;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.PlayerListHud;
 import net.minecraft.scoreboard.Scoreboard;
@@ -16,12 +16,12 @@ public class PlayerListHudMixin {
     @Inject(method = "render", at = @At("HEAD"))
     private void drawStart(DrawContext context, int scaledWindowWidth, Scoreboard scoreboard, ScoreboardObjective objective, CallbackInfo ci) {
         context.draw();
-        OverlayRenderer.beginDraw(AllDefaultOverlayComponents.playerList);
+        OBSOverlay.getAPI().beginDraw(AllDefaultOverlayComponents.playerList);
     }
 
     @Inject(method = "render", at = @At("RETURN"))
     private void drawEnd(DrawContext context, int scaledWindowWidth, Scoreboard scoreboard, ScoreboardObjective objective, CallbackInfo ci) {
         context.draw();
-        OverlayRenderer.endDraw(AllDefaultOverlayComponents.playerList);
+        OBSOverlay.getAPI().endDraw(AllDefaultOverlayComponents.playerList);
     }
 }

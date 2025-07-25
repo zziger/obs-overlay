@@ -1,6 +1,8 @@
-package me.zziger.obsoverlay.registry;
+package me.zziger.obsoverlay.component;
 
-public interface OverlayComponent {
+import me.zziger.obsoverlay.OverlayFramebufferType;
+
+public interface IOverlayComponent {
 
     /**
      * Can this component auto-hide when any screen is open?
@@ -54,4 +56,11 @@ public interface OverlayComponent {
      * Invoked before endDraw
      */
     default void beforeEndDraw() {};
+
+    /**
+     * Return required framebuffer type
+     */
+    default OverlayFramebufferType getFramebufferType() {
+        return OverlayFramebufferType.NORMAL;
+    }
 }

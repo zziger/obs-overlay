@@ -1,9 +1,7 @@
-package me.zziger.obsoverlay.mixin.hud;
+package me.zziger.obsoverlay.mixin.components;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import me.zziger.obsoverlay.registry.AllDefaultOverlayComponents;
-import me.zziger.obsoverlay.OverlayRenderer;
-import net.minecraft.client.MinecraftClient;
+import me.zziger.obsoverlay.OBSOverlay;
+import me.zziger.obsoverlay.component.AllDefaultOverlayComponents;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ChatScreen;
 import org.spongepowered.asm.mixin.Mixin;
@@ -16,13 +14,12 @@ public class ChatScreenMixin {
     @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/ChatHud;render(Lnet/minecraft/client/gui/DrawContext;IIIZ)V", shift = At.Shift.AFTER))
     private void drawStart(DrawContext context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
         context.draw();
-        OverlayRenderer.beginDraw(AllDefaultOverlayComponents.chatBar);
-        RenderSystem.clear(256);
+        OBSOverlay.getAPI().beginDraw(AllDefaultOverlayComponents.chatBar);
     }
 
     @Inject(method = "render", at = @At("RETURN"))
     private void drawEnd(DrawContext context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
         context.draw();
-        OverlayRenderer.endDraw(AllDefaultOverlayComponents.chatBar);
+        OBSOverlay.getAPI().endDraw(AllDefaultOverlayComponents.chatBar);
     }
 }

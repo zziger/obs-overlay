@@ -1,7 +1,7 @@
-package me.zziger.obsoverlay.mixin.hud;
+package me.zziger.obsoverlay.mixin.components;
 
-import me.zziger.obsoverlay.registry.AllDefaultOverlayComponents;
-import me.zziger.obsoverlay.OverlayRenderer;
+import me.zziger.obsoverlay.OBSOverlay;
+import me.zziger.obsoverlay.component.AllDefaultOverlayComponents;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.ChatHud;
 import org.spongepowered.asm.mixin.Mixin;
@@ -14,12 +14,12 @@ public class ChatHudMixin {
     @Inject(method = "render", at = @At("HEAD"))
     private void drawStart(DrawContext context, int currentTick, int mouseX, int mouseY, boolean focused, CallbackInfo ci) {
         context.draw();
-        OverlayRenderer.beginDraw(AllDefaultOverlayComponents.chat);
+        OBSOverlay.getAPI().beginDraw(AllDefaultOverlayComponents.chat);
     }
 
     @Inject(method = "render", at = @At("RETURN"))
     private void drawEnd(DrawContext context, int currentTick, int mouseX, int mouseY, boolean focused, CallbackInfo ci) {
         context.draw();
-        OverlayRenderer.endDraw(AllDefaultOverlayComponents.chat);
+        OBSOverlay.getAPI().endDraw(AllDefaultOverlayComponents.chat);
     }
 }

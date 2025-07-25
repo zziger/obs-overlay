@@ -6,18 +6,12 @@ import net.raphimc.immediatelyfastapi.ImmediatelyFastApi;
 
 public class ImmediatelyFastCompat {
     private static boolean initialized = false;
-    private static BatchingAccess api = null;
+    private static boolean hasMod = false;
 
-    public static void forceDraw() {
-        if (!initialized) {
-            if (Platform.isModLoaded("immediatelyfast")) {
-                api = ImmediatelyFastApi.getApiImpl().getBatching();
-            }
-            initialized = true;
-        }
-
-        if (api != null) {
-            api.forceDrawBuffers();
-        }
+    public static boolean hasImmediatelyFast() {
+        if (initialized) return hasMod;
+        hasMod = Platform.isModLoaded("immediatelyfast");
+        initialized = true;
+        return hasMod;
     }
 }
