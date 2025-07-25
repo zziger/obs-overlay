@@ -64,7 +64,7 @@ remapJar {
 unifiedPublishing {
     project {
         displayName = "[Fabric $rootProject.supported_version] v$rootProject.mod_version"
-        releaseType = "release"
+        releaseType = "beta"
         gameVersions = ["1.21.4"]
         gameLoaders = ["fabric"]
 

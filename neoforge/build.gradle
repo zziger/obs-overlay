@@ -65,7 +65,7 @@ remapJar {
 unifiedPublishing {
     project {
         displayName = "[NeoForge $rootProject.supported_version] v$rootProject.mod_version"
-        releaseType = "release"
+        releaseType = "beta"
         gameVersions = ["1.21.4"]
         gameLoaders = ["neoforge"]
 
