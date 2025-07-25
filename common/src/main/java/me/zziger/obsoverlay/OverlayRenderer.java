@@ -66,10 +66,26 @@ public class OverlayRenderer implements Closeable {
 
     public void backupDepth(boolean fullDepth) {
         MinecraftClient client = MinecraftClient.getInstance();
-        int fb = GlStateManager.getBoundFramebuffer();
+
+        int fb = GlStateManager._getInteger(GL_DRAW_FRAMEBUFFER_BINDING);
+        int prevDepthTest = GlStateManager._getInteger(GL_DEPTH_TEST);
+        int prevDepthMask = GlStateManager._getInteger(GL_DEPTH_WRITEMASK);
+        int prevBlend = GlStateManager._getInteger(GL_BLEND);
+        int prevCull = GlStateManager._getInteger(GL_CULL_FACE);
+
         GlStateManager._glBindFramebuffer(GL_DRAW_FRAMEBUFFER, depthBackupFramebuffer.fbo);
+
         renderQuad(false, true, fullDepth, client.getFramebuffer());
+
         GlStateManager._glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fb);
+
+        if (prevDepthTest == GL_TRUE) GlStateManager._enableDepthTest();
+        else GlStateManager._disableDepthTest();
+        GlStateManager._depthMask(prevDepthMask == GL_TRUE);
+        if (prevBlend == GL_TRUE) GlStateManager._enableBlend();
+        else GlStateManager._disableBlend();
+        if (prevCull == GL_TRUE) GlStateManager._enableCull();
+        else GlStateManager._disableCull();
     }
 
     private void backupFramebuffer() {

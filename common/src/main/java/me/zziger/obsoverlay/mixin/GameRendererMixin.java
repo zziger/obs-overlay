@@ -32,8 +32,8 @@ public class GameRendererMixin {
 
     @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;draw()V", shift = At.Shift.AFTER))
     private void renderTestIcon(RenderTickCounter tickCounter, boolean tick, CallbackInfo ci, @Local() DrawContext instance) {
-        instance.draw();
         if (OBSOverlayConfig.get().showTestIcon && OBSOverlay.getIsInitialized()) {
+            instance.draw();
             OBSOverlay.getAPI().beginDraw(OverlayFramebufferType.NORMAL);
             try {
                 instance.drawGuiTexture(RenderLayer::getGuiTextured, Identifier.ofVanilla("icon/checkmark"), 0, 0, 16, 16);
