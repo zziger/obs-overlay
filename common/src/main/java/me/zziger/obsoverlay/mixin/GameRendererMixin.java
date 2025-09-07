@@ -23,7 +23,7 @@ public class GameRendererMixin {
         if (OBSOverlayConfig.get().showTestIcon && OBSOverlay.libraryInitialized) {
             OverlayRenderer.beginDraw();
             try {
-                instance.drawGuiTexture(Identifier.of("minecraft", "icon/checkmark"), 0, 0, 16, 16);
+                instance.drawTexture(Identifier.of("minecraft", "textures/gui/checkmark.png"), 0, 0, 0, 0, 16, 16, 16, 16);
             } catch (Exception ignored) {
             }
             OverlayRenderer.endDraw();

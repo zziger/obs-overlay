@@ -1,11 +1,13 @@
 {
   "required": true,
   "package": "me.zziger.obsoverlay.neoforge.mixin",
-  "compatibilityLevel": "JAVA_21",
+  "compatibilityLevel": "JAVA_17",
   "minVersion": "0.8",
   "client": [
+    "ForgeGuiMixin",
     "GameRendererMixin",
-    "InGameHudMixin"
+    "InGameHudMixin",
+    "SpectatorHudMixin"
   ],
   "mixins": [
   ],

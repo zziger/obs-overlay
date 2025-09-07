@@ -15,30 +15,30 @@ displayTest="IGNORE_ALL_VERSION"
 logoFile = "assets/obs_overlay/icon.png"
 
 [[dependencies.obs_overlay]]
-modId = "neoforge"
-type = "required"
-versionRange = "[20.5,)"
+modId = "forge"
+mandatory = true
+versionRange = "[47.4.6,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.obs_overlay]]
 modId = "minecraft"
-type = "required"
-versionRange = "[1.20.5,1.20.6)"
+mandatory = true
+versionRange = "[1.20.1,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.obs_overlay]]
 modId = "architectury"
-type = "required"
-versionRange = "[12.0.27,)"
+mandatory = true
+versionRange = "[9.2.14,)"
 ordering = "AFTER"
 side = "BOTH"
 
 [[dependencies.obs_overlay]]
 modId = "cloth_config"
-type = "required"
-versionRange = "[14.0.126,)"
+mandatory = true
+versionRange = "[11.1.136,)"
 ordering = "AFTER"
 side = "BOTH"
 

@@ -1,4 +1,4 @@
-package me.zziger.obsoverlay.mixin.hud;
+package me.zziger.obsoverlay.fabric.client.mixin.hud;
 
 import me.zziger.obsoverlay.registry.AllDefaultOverlayComponents;
 import me.zziger.obsoverlay.OverlayRenderer;

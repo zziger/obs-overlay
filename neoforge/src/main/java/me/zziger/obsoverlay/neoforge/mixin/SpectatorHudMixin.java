@@ -2,23 +2,23 @@ package me.zziger.obsoverlay.neoforge.mixin;
 
 import me.zziger.obsoverlay.OverlayRenderer;
 import me.zziger.obsoverlay.registry.AllDefaultOverlayComponents;
-import net.minecraft.client.gui.hud.InGameHud;
+import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.hud.SpectatorHud;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(InGameHud.class)
-public class InGameHudMixin {
-    @Inject(method = "renderSelectedItemName", at = @At(value = "HEAD"))
-    private void drawStartSelectedItemName(CallbackInfo ci) {
+@Mixin(SpectatorHud.class)
+public class SpectatorHudMixin {
+
+    @Inject(method = "render", at = @At("HEAD"))
+    private void drawStart(DrawContext context, CallbackInfo ci) {
         OverlayRenderer.beginDraw(AllDefaultOverlayComponents.mainHud);
     }
 
-    @Inject(method = "renderSelectedItemName", at = @At(value = "RETURN"))
-    private void drawEndSelectedItemName(CallbackInfo ci) {
+    @Inject(method = "render", at = @At("RETURN"))
+    private void drawEnd(DrawContext context, CallbackInfo ci) {
         OverlayRenderer.endDraw(AllDefaultOverlayComponents.mainHud);
     }
-
 }

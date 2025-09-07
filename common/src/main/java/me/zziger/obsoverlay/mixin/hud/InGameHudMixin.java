@@ -10,6 +10,16 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(InGameHud.class)
 public class InGameHudMixin {
+    @Inject(method = "renderHotbar", at = @At(value = "HEAD"))
+    private void drawStartHotbar(CallbackInfo ci) {
+        OverlayRenderer.beginDraw(AllDefaultOverlayComponents.mainHud);
+    }
+
+    @Inject(method = "renderHotbar", at = @At(value = "RETURN"))
+    private void drawEndHotbar(CallbackInfo ci) {
+        OverlayRenderer.endDraw(AllDefaultOverlayComponents.mainHud);
+    }
+
     @Inject(method = "renderScoreboardSidebar(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/scoreboard/ScoreboardObjective;)V", at = @At("HEAD"))
     private void drawStartScoreboard(CallbackInfo ci) {
         OverlayRenderer.beginDraw(AllDefaultOverlayComponents.scoreboards);
@@ -20,32 +30,32 @@ public class InGameHudMixin {
         OverlayRenderer.endDraw(AllDefaultOverlayComponents.scoreboards);
     }
 
-    @Inject(method = "renderOverlayMessage", at = @At("HEAD"))
+    @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/profiler/Profiler;push(Ljava/lang/String;)V", ordinal = 2))
     private void drawStartActionbar(CallbackInfo ci) {
         OverlayRenderer.beginDraw(AllDefaultOverlayComponents.actionbar);
     }
 
-    @Inject(method = "renderOverlayMessage", at = @At("RETURN"))
+    @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/profiler/Profiler;pop()V", ordinal = 2))
     private void drawEndActionbar(CallbackInfo ci) {
         OverlayRenderer.endDraw(AllDefaultOverlayComponents.actionbar);
     }
 
-    @Inject(method = "renderTitleAndSubtitle", at = @At("HEAD"))
+    @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/profiler/Profiler;push(Ljava/lang/String;)V", ordinal = 3))
     private void drawStartTitleSubtitle(CallbackInfo ci) {
         OverlayRenderer.beginDraw(AllDefaultOverlayComponents.titleSubtitle);
     }
 
-    @Inject(method = "renderTitleAndSubtitle", at = @At("RETURN"))
+    @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/profiler/Profiler;pop()V", ordinal = 3))
     private void drawEndTitleSubtitle(CallbackInfo ci) {
         OverlayRenderer.endDraw(AllDefaultOverlayComponents.titleSubtitle);
     }
 
-    @Inject(method = "renderExperienceLevel", at = @At("HEAD"))
+    @Inject(method = "renderExperienceBar", at = @At("HEAD"))
     private void drawStartExperienceLevel(CallbackInfo ci) {
         OverlayRenderer.beginDraw(AllDefaultOverlayComponents.mainHud);
     }
 
-    @Inject(method = "renderExperienceLevel", at = @At("RETURN"))
+    @Inject(method = "renderExperienceBar", at = @At("RETURN"))
     private void drawEndExperienceLevel(CallbackInfo ci) {
         OverlayRenderer.endDraw(AllDefaultOverlayComponents.mainHud);
     }
@@ -60,13 +70,23 @@ public class InGameHudMixin {
         OverlayRenderer.endDraw(AllDefaultOverlayComponents.effects);
     }
 
-    @Inject(method = "renderMainHud", at = @At("HEAD"))
+    @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerInteractionManager;getCurrentGameMode()Lnet/minecraft/world/GameMode;"))
     private void drawStartMainHud(CallbackInfo ci) {
         OverlayRenderer.beginDraw(AllDefaultOverlayComponents.mainHud);
     }
 
-    @Inject(method = "renderMainHud", at = @At("RETURN"))
+    @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;getSleepTimer()I", ordinal = 0))
     private void drawEndMainHud(CallbackInfo ci) {
+        OverlayRenderer.endDraw(AllDefaultOverlayComponents.mainHud);
+    }
+
+    @Inject(method = "renderHeldItemTooltip", at = @At(value = "HEAD"))
+    private void drawStartSelectedItemName(CallbackInfo ci) {
+        OverlayRenderer.beginDraw(AllDefaultOverlayComponents.mainHud);
+    }
+
+    @Inject(method = "renderHeldItemTooltip", at = @At(value = "RETURN"))
+    private void drawEndSelectedItemName(CallbackInfo ci) {
         OverlayRenderer.endDraw(AllDefaultOverlayComponents.mainHud);
     }
 }

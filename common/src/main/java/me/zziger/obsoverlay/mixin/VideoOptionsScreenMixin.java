@@ -23,10 +23,13 @@ public abstract class VideoOptionsScreenMixin extends GameOptionsScreen {
         super(parent, gameOptions, title);
     }
 
+    // Impossible to add widget-only entry on MC 1.20.1, use Mod Menu for entrypoint of the config instead
+    /*
     @Inject(method = "init", at = @At("TAIL"))
     public void init(CallbackInfo ci) {
         this.list.addWidgetEntry(ButtonWidget.builder(Text.translatable("obs_overlay.config.title"), (button) -> {
             this.client.setScreen(OBSOverlayConfig.getScreenSupplier((VideoOptionsScreen) (Object) this).get());
         }).build(), null);
     }
+    */
 }
