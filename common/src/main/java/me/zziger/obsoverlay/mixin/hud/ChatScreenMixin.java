@@ -12,13 +12,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ChatScreen.class)
 public class ChatScreenMixin {
-    @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/ChatHud;render(Lnet/minecraft/client/gui/DrawContext;IIIZ)V", shift = At.Shift.AFTER))
+    @Inject(method = "render", at = @At("HEAD"))
     private void drawStart(CallbackInfo ci) {
         OverlayRenderer.beginDraw(AllDefaultOverlayComponents.chatBar);
         RenderSystem.clear(256, MinecraftClient.IS_SYSTEM_MAC);
     }
 
-    @Inject(method = "render", at = @At("RETURN"))
+    @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/ChatInputSuggestor;render(Lnet/minecraft/client/gui/DrawContext;II)V", shift = At.Shift.AFTER))
     private void drawEnd(CallbackInfo ci) {
         OverlayRenderer.endDraw(AllDefaultOverlayComponents.chatBar);
     }
