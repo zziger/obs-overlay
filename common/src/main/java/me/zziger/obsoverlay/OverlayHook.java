@@ -34,10 +34,20 @@ import java.util.Set;
  * <p><b>Linux</b> — hooks the real {@code glXSwapBuffers} /
  * {@code glXSwapBuffersMscOML} (GLVND, in {@code libGL.so.1}/{@code libGLX.so.0})
  * or {@code eglSwapBuffers} ({@code libEGL.so.1}) with the bundled
- * {@code libMinHook.so} (a funchook-based MinHook-compatible shim). These are the
- * same symbols obs-vkcapture's LD_PRELOAD library eventually calls into after it
- * copies the back buffer, so the overlay lands after the copy — identical
- * ordering semantics to Windows. See {@code src/native/linux/README.md}.
+ * {@code libMinHook.so} (a funchook-based MinHook-compatible shim).
+ *
+ * <p>obs-vkcapture's capture shim is {@code LD_PRELOAD}ed and interposes the
+ * {@code glX*} / {@code egl*} symbols process-wide, so plain {@code dlsym} /
+ * {@code glXGetProcAddress} from Java resolve <em>into the shim</em> rather than
+ * the real driver. To land the hook after the shim copies the back buffer, the
+ * real mapped GL libraries are located via {@code /proc/self/maps} and their
+ * {@code glXSwapBuffers} / {@code glXSwapBuffersMscOML} / {@code eglSwapBuffers}
+ * addresses are resolved from the ELF {@code .dynsym} table (runtime address =
+ * load base + {@code st_value} − {@code p_vaddr}), which is immune to symbol
+ * interposition. Any target that still lands inside the capture shim is filtered
+ * out. The resulting hook sits on the same underlying real symbols the shim
+ * calls into after its copy — identical ordering semantics to Windows. See
+ * {@code src/native/linux/README.md}.
  */
 public class OverlayHook {
     private static boolean libraryInitialized = false;
@@ -46,8 +56,6 @@ public class OverlayHook {
     private static MinHookLinux minHookLinux;
     /** Strong references so JNA never collects the detour trampolines. */
     private static final List<Callback> retainedCallbacks = new ArrayList<>();
-    /** DEBUG: how many times the Linux swap detour actually fired. */
-    private static final java.util.concurrent.atomic.AtomicInteger swapDetourCount = new java.util.concurrent.atomic.AtomicInteger();
 
     public interface Handler {
         void run();
@@ -174,20 +182,9 @@ public class OverlayHook {
         MinHookLinux minhook = getMinHookLinux();
         minhook.MH_Initialize();
 
-        logLinuxSymbolProbe();
-
         for (SwapTarget target : targets) {
             PointerByReference reference = new PointerByReference();
-            boolean[] firstCall = {true};
             MinHookLinux.SwapBuffers callback = (first, second) -> {
-                int n = swapDetourCount.incrementAndGet();
-                if (firstCall[0]) {
-                    firstCall[0] = false;
-                    OBSOverlay.LOGGER.info("[DEBUG] first swap detour fire on {} thread={} swapCount={}",
-                            target.name, Thread.currentThread().getName(), n);
-                } else if (n % 200 == 0) {
-                    OBSOverlay.LOGGER.info("[DEBUG] swap detour fired {} times on {}", n, target.name);
-                }
                 handlerList.forEach(Handler::run);
                 Function origFunction = Function.getFunction(reference.getValue(), Function.C_CONVENTION);
                 if (target.glx) {
@@ -222,24 +219,311 @@ public class OverlayHook {
         List<SwapTarget> targets = new ArrayList<>();
         Set<Long> seen = new HashSet<>();
 
-        // GLVND: the pointer GLFW actually calls can come from either libGL.so.1
-        // (a forwarding stub) or libGLX.so.0 (the dispatch entry). Hook all of
-        // them; identical addresses are de-duplicated.
+        // Make sure the real GL libraries are resident (and thus visible in
+        // /proc/self/maps) before we parse their ELF symbols from disk. JNA's
+        // dlopen by SONAME returns the real library — the capture shim has a
+        // different SONAME (e.g. libobs_glcapture.so), so it does not shadow
+        // the real one here.
+        for (String lib : new String[]{"libGL.so.1", "libGLX.so.0", "libEGL.so.1"}) {
+            try {
+                NativeLibrary.getInstance(lib);
+            } catch (Throwable ignored) {
+            }
+        }
+
+        // 1) dlsym-based resolution (libGL.so.1 / libGLX.so.0). When a capture
+        //    shim (obs-vkcapture's libobs_glcapture.so, ...) is LD_PRELOAD'd it
+        //    GLOBALLY interposes the glX* symbols, so these addresses land
+        //    inside the shim itself — the wrong place (our detour would run
+        //    before the shim copies the back buffer). We collect them anyway;
+        //    step 4 drops exactly that case.
         for (String lib : new String[]{"libGL.so.1", "libGLX.so.0"}) {
             addTarget(targets, seen, resolveSymbol(lib, "glXSwapBuffers"), true, "glXSwapBuffers");
             addTarget(targets, seen, resolveSymbol(lib, "glXSwapBuffersMscOML"), true, "glXSwapBuffersMscOML");
         }
 
-        addTarget(targets, seen, resolveSymbol("libEGL.so.1", "eglSwapBuffers"), false, "eglSwapBuffers");
+        // 2) The function pointer obs-vkcapture's shim actually final-calls: it
+        //    resolves the NEXT glXGetProcAddress and calls it with the name.
+        //    Only this pointer guarantees "copy happened already" when our
+        //    detour runs. Without a shim it resolves to the real driver.
+        addTarget(targets, seen, resolveGlxReal("libGLX.so.0", "glXSwapBuffers"),
+                true, "glXSwapBuffers(real)");
+        addTarget(targets, seen, resolveGlxReal("libGLX.so.0", "glXSwapBuffersMscOML"),
+                true, "glXSwapBuffersMscOML(real)");
+
+        // 3) The deterministic route that CANNOT be seized by the interposer:
+        //    parse the .dynsym of the actual libGLX/libGL/libEGL files that are
+        //    mapped into the process, so the returned address runs *after* the
+        //    shim has copied the back buffer. This is the seam the shim's own
+        //    real_dlsym(RTLD_NEXT, glXGetProcAddress) resolves to.
+        for (String file : mappedSharedObjects("libGL.so.1", "libGLX.so.0", "libEGL.so.1")) {
+            addTarget(targets, seen, resolveFileSymbol(file, "glXSwapBuffers"),
+                    true, "glXSwapBuffers@file");
+            addTarget(targets, seen, resolveFileSymbol(file, "glXSwapBuffersMscOML"),
+                    true, "glXSwapBuffersMscOML@file");
+            addTarget(targets, seen, resolveFileSymbol(file, "eglSwapBuffers"),
+                    false, "eglSwapBuffers@file");
+        }
+
+        // 4) Drop anything that landed inside the capture shim itself (its
+        //    exported glXSwapBuffers entry) — hooking that is exactly the
+        //    pre-copy position that makes the overlay leak into OBS.
+        List<String> shimNames = preloadShimBasenames();
+        if (!shimNames.isEmpty()) {
+            targets.removeIf(t -> {
+                String owner = describeMapping(Pointer.nativeValue(t.address));
+                for (String s : shimNames) {
+                    if (owner.contains(s)) return true;
+                }
+                return false;
+            });
+            OBSOverlay.LOGGER.info("Skipped swap symbols exported by LD_PRELOAD capture shim(s) {} — hooking the real GL libs instead", shimNames);
+        }
 
         return targets;
     }
 
+    /** Adds a target, ignoring null/duplicate. */
     private static void addTarget(List<SwapTarget> targets, Set<Long> seen, Pointer address, boolean glx, String name) {
         if (address == null) return;
         long value = Pointer.nativeValue(address);
         if (!seen.add(value)) return;
         targets.add(new SwapTarget(address, glx, name));
+    }
+
+    /** Basenames of the LD_PRELOAD'd libraries ($LIB expanded), for shim filtering. */
+    private static List<String> preloadShimBasenames() {
+        List<String> names = new ArrayList<>();
+        String preload = System.getenv("LD_PRELOAD");
+        if (preload == null || preload.isEmpty()) return names;
+        String arch = System.getProperty("os.arch").toLowerCase(Locale.ROOT);
+        String libDir = (arch.contains("64") || arch.contains("aarch")) ? "lib64" : "lib32";
+        for (String entry : preload.split("\\s+")) {
+            if (entry.isEmpty()) continue;
+            String expanded = entry.replace("$LIB", libDir);
+            String base = new File(expanded).getName();
+            if (!base.isEmpty()) names.add(base);
+        }
+        return names;
+    }
+
+    /**
+     * Resolves the swap function the *real* driver would hand out — the same
+     * value obs-vkcapture's shim goes through ({@code real_dlsym(RTLD_NEXT,
+     * "glXGetProcAddressARB")(name)}). Loading the function out of the actual
+     * libGLX.so.0 handle (rather than the preloaded shim) lands on the real
+     * dispatch entry, so the returned pointer is the one that runs *after* the
+     * shim has copied the back buffer. Returns null if it can't be resolved.
+     */
+    private static Pointer resolveGlxReal(String libName, String procName) {
+        try {
+            NativeLibrary library = NativeLibrary.getInstance(libName);
+            Function getProc = getFirstAvailableFunction(library,
+                    "glXGetProcAddressARB", "glXGetProcAddress");
+            if (getProc == null) return null;
+            return (Pointer) getProc.invoke(Pointer.class, new Object[]{procName});
+        } catch (Throwable t) {
+            return null;
+        }
+    }
+
+    private static Function getFirstAvailableFunction(NativeLibrary library, String... names) {
+        for (String name : names) {
+            try {
+                return library.getFunction(name);
+            } catch (Throwable ignored) {
+                // try next name
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Real shared objects currently mapped into the process whose on-disk name
+     * matches one of the given substrings (e.g. "libGL.so.1"). The capture shim
+     * is excluded deliberately when it shadows the GL API.
+     */
+    private static List<String> mappedSharedObjects(String... nameSubstrings) {
+        List<String> files = new ArrayList<>();
+        Set<String> seenFiles = new HashSet<>();
+        List<String> shimNames = preloadShimBasenames();
+        for (String[] parts : readMaps()) {
+            if (parts.length < 6) continue;
+            String path = parts[5];
+            if (!path.startsWith("/")) continue;
+            String base = new File(path).getName();
+            boolean isShim = false;
+            for (String s : shimNames) {
+                if (path.contains(s)) { isShim = true; break; }
+            }
+            if (isShim) continue; // never resolve symbols from the capture shim itself
+            for (String sub : nameSubstrings) {
+                if (base.startsWith(sub)) {
+                    if (seenFiles.add(path)) files.add(path);
+                    break;
+                }
+            }
+        }
+        return files;
+    }
+
+    /** Parsed rows of /proc/self/maps. */
+    private static List<String[]> readMaps() {
+        List<String[]> rows = new ArrayList<>();
+        try {
+            java.io.BufferedReader r = new java.io.BufferedReader(new java.io.FileReader("/proc/self/maps"));
+            String line;
+            while ((line = r.readLine()) != null) {
+                String[] parts = line.trim().split("\\s+");
+                if (parts.length >= 6) rows.add(parts);
+            }
+            r.close();
+        } catch (java.io.IOException ignored) {
+        }
+        return rows;
+    }
+
+    /**
+     * Resolves a dynamic symbol from the shared object on disk by parsing its
+     * ELF .dynsym, and returns the runtime address in THIS process (load base
+     * taken from /proc/self/maps). Immune to LD_PRELOAD symbol interposition —
+     * this is the address the interposer itself has to call through.
+     */
+    private static Pointer resolveFileSymbol(String filePath, String symbol) {
+        try {
+            long[] symVal = findDynamicSymbol(filePath, symbol);
+            if (symVal == null) return null;
+            long base = loadBase(filePath);
+            if (base == 0) return null;
+            return new Pointer(base + symVal[0] - symVal[1]);
+        } catch (Throwable t) {
+            return null;
+        }
+    }
+
+    /** Base address of the (offset-0) mapping of {@code filePath}. */
+    private static long loadBase(String filePath) {
+        String target = realPathOrNull(filePath);
+        if (target == null) target = filePath;
+        for (String[] parts : readMaps()) {
+            if (parts.length < 6) continue;
+            if (!parts[5].equals(target)) continue;
+            try {
+                if (Long.parseLong(parts[2], 16) != 0) continue; // first (offset 0) mapping
+            } catch (NumberFormatException e) {
+                continue;
+            }
+            String[] range = parts[0].split("-");
+            return Long.parseLong(range[0], 16);
+        }
+        return 0;
+    }
+
+    private static String realPathOrNull(String filePath) {
+        try {
+            return new File(filePath).getCanonicalPath();
+        } catch (java.io.IOException e) {
+            return null;
+        }
+    }
+
+    /** Returns [st_value, p_vaddr-of-first-PT_LOAD] for the named dynsym. */
+    private static long[] findDynamicSymbol(String filePath, String symbolName) {
+        try (java.io.RandomAccessFile raf = new java.io.RandomAccessFile(filePath, "r")) {
+            byte[] hdr = new byte[64];
+            raf.seek(0);
+            raf.readFully(hdr);
+            if (hdr[0] != 0x7f || hdr[1] != 'E' || hdr[2] != 'L' || hdr[3] != 'F') return null;
+            long ePhoff = u64(hdr, 0x20);
+            int ePhentsize = (int) u16(hdr, 0x36);
+            int ePhnum = (int) u16(hdr, 0x38);
+            long eShoff = u64(hdr, 0x28);
+            int eShentsize = (int) u16(hdr, 0x3a);
+            int eShnum = (int) u16(hdr, 0x3c);
+
+            // First PT_LOAD's p_vaddr — runtime addr = base + (st_value - p_vaddr).
+            long loadVaddr = 0;
+            if (ePhnum > 0 && ePhentsize >= 56) {
+                byte[] ph = new byte[56];
+                for (int i = 0; i < ePhnum; i++) {
+                    raf.seek(ePhoff + (long) i * ePhentsize);
+                    raf.readFully(ph);
+                    if (u32(ph, 0) == 1) { // PT_LOAD
+                        loadVaddr = u64(ph, 16);
+                        break;
+                    }
+                }
+            }
+
+            // Scan section headers: locate SHT_DYNSYM and the strtab it links to.
+            long dynsymOff = 0, dynsymSize = 0;
+            int dynsymLink = -1;
+            long strOff = 0, strSize = 0;
+            if (eShnum > 0 && eShentsize >= 64) {
+                int[] shType = new int[eShnum], shLink = new int[eShnum];
+                long[] shOff = new long[eShnum], shSize = new long[eShnum];
+                byte[] sh = new byte[64];
+                for (int i = 0; i < eShnum; i++) {
+                    raf.seek(eShoff + (long) i * eShentsize);
+                    raf.readFully(sh);
+                    shType[i] = (int) u32(sh, 4);
+                    shLink[i] = (int) u32(sh, 40);
+                    shOff[i] = u64(sh, 24);
+                    shSize[i] = u64(sh, 32);
+                    if (shType[i] == 11) { // SHT_DYNSYM
+                        dynsymOff = shOff[i];
+                        dynsymSize = shSize[i];
+                        dynsymLink = shLink[i]; // -> .dynstr
+                    }
+                }
+                if (dynsymLink > 0 && dynsymLink < eShnum && shType[dynsymLink] == 3) {
+                    strOff = shOff[dynsymLink];
+                    strSize = shSize[dynsymLink];
+                }
+            }
+            if (dynsymOff == 0 || strOff == 0) return null;
+
+            byte[] strtab = new byte[(int) strSize];
+            raf.seek(strOff);
+            raf.readFully(strtab);
+
+            byte[] sym = new byte[24];
+            int nsyms = (int) (dynsymSize / 24);
+            for (int i = 0; i < nsyms; i++) {
+                raf.seek(dynsymOff + i * 24L);
+                raf.readFully(sym);
+                int stName = (int) u32(sym, 0);
+                int stBind = (sym[4] & 0xff) >> 4; // GLOBAL=1, WEAK=2
+                if (stBind != 1 && stBind != 2) continue;
+                long stValue = u64(sym, 8);
+                if (stValue == 0) continue;
+                if (cstr(strtab, stName).equals(symbolName)) {
+                    return new long[]{stValue, loadVaddr};
+                }
+            }
+        } catch (java.io.IOException ignored) {
+        }
+        return null;
+    }
+
+    private static long u16(byte[] b, int off) {
+        return (b[off] & 0xFF) | ((b[off + 1] & 0xFF) << 8);
+    }
+
+    private static long u32(byte[] b, int off) {
+        return (b[off] & 0xFFL) | ((b[off + 1] & 0xFFL) << 8)
+                | ((b[off + 2] & 0xFFL) << 16) | ((b[off + 3] & 0xFFL) << 24);
+    }
+
+    private static long u64(byte[] b, int off) {
+        return u32(b, off) | (u32(b, off + 4) << 32);
+    }
+
+    private static String cstr(byte[] b, int off) {
+        if (off < 0 || off >= b.length) return "";
+        int end = off;
+        while (end < b.length && b[end] != 0) end++;
+        return new String(b, off, end - off, java.nio.charset.StandardCharsets.UTF_8);
     }
 
     private static Pointer resolveSymbol(String libName, String symbol) {
@@ -252,26 +536,27 @@ public class OverlayHook {
     }
 
     /**
-     * DEBUG: log every swap symbol we can see, so we can tell which present
-     * path the game actually uses (GLX vs EGL, damage variants, GLFW).
+     * Returns the file mapped at {@code addr} in this process (from
+     * /proc/self/maps), or "(unknown)" if not found.
      */
-    private static void logLinuxSymbolProbe() {
-        String[][] probes = {
-                {"libGL.so.1", "glXSwapBuffers"}, {"libGLX.so.0", "glXSwapBuffers"},
-                {"libGL.so.1", "glXSwapBuffersMscOML"}, {"libGLX.so.0", "glXSwapBuffersMscOML"},
-                {"libEGL.so.1", "eglSwapBuffers"},
-                {"libEGL.so.1", "eglSwapBuffersWithDamageKHR"},
-                {"libEGL.so.1", "eglSwapBuffersWithDamageEXT"},
-                {"libglfw.so.3", "glfwSwapBuffers"}, {"libglfw.so", "glfwSwapBuffers"},
-                {"libGLESv2.so.2", "glClear"},
-        };
-        StringBuilder sb = new StringBuilder("[DEBUG] resolvable swap symbols:");
-        for (String[] probe : probes) {
-            Pointer p = resolveSymbol(probe[0], probe[1]);
-            sb.append("\n  ")
-                    .append(String.format(Locale.ROOT, "%-32s = 0x%016x (%s)",
-                            probe[1], p == null ? 0 : Pointer.nativeValue(p), probe[0]));
+    private static String describeMapping(long addr) {
+        try {
+            try (java.io.BufferedReader r =
+                         new java.io.BufferedReader(new java.io.FileReader("/proc/self/maps"))) {
+                String line;
+                while ((line = r.readLine()) != null) {
+                    String[] parts = line.trim().split("\\s+");
+                    if (parts.length < 6) continue;
+                    String[] range = parts[0].split("-");
+                    long start = Long.parseLong(range[0], 16);
+                    long end = Long.parseLong(range[1], 16);
+                    if (addr >= start && addr < end) {
+                        return parts[5];
+                    }
+                }
+            }
+        } catch (java.io.IOException ignored) {
         }
-        OBSOverlay.LOGGER.info("{}", sb);
+        return "(unknown)";
     }
 }
