@@ -11,7 +11,7 @@
 ## Installation
 
 This mod is **client-only**.\
-At the moment only **Windows** is supported.
+Supports **Windows** (x64/x86) and **Linux** (x86_64, see [Linux support](#linux-support)).
 
 ### Dependencies
 
@@ -19,6 +19,41 @@ At the moment only **Windows** is supported.
 - Architectury API
 - Fabric API (Fabric only)
 - Mod Menu (Optional, Fabric only)
+
+## Linux support
+
+On Linux the game's present call is hooked the same way as on Windows, but with
+different symbols and a bundled funchook-based hook library:
+
+| Symbol(s) | Hooks |
+|---|---|
+| `glXSwapBuffers`, `glXSwapBuffersMscOML` (GLX) | `libGL.so.1` / `libGLX.so.0` (GLVND) |
+| `eglSwapBuffers` (EGL) | `libEGL.so.1` |
+
+To keep the HUD out of the stream, capture the game with
+[obs-vkcapture](https://github.com/nowrep/obs-vkcapture) and use an OBS **Game
+Capture** (vkcapture) source:
+
+```sh
+obs-gamecapture %command%    # GL + Vulkan capture helper
+# or, when only Vulkan capture is needed:
+env OBS_VKCAPTURE=1 %command%
+```
+
+> **Why not window/screen capture on Linux?** Window/screen capture reads the
+> composited pixels the local player sees, which always include the HUD.
+> obs-vkcapture's Game Capture picks up the frame *before* the overlay is drawn
+> (its GL injector grabs the back buffer first, the mod's hook draws after), so
+> the HUD is then excluded from the stream.
+
+### Limitations
+
+- **Native Vulkan renderers** (VulkanMod) are not overlayed — the overlay
+  pipeline is OpenGL, same as on Windows.
+- **aarch64 Linux** has no prebuilt `libMinHook.so` yet; there the native hook
+  refuses to start (build it from `src/native/linux` and add
+  `lib/libMinHook.linux-aarch64.so` to enable it).
+- macOS is not supported.
 
 ## Features
 
@@ -79,3 +114,8 @@ Check [API documentation](API.md) for more information.
 ## License
 
 [MIT](LICENSE)
+
+The bundled Linux hook (`libMinHook.so` in `src/main/resources/lib`) statically
+links [funchook](https://github.com/kubo/funchook), licensed
+[GPLv2+ with a linking exception](src/native/linux/LICENSE.funchook) that permits
+distribution alongside or within independently-licensed modules.

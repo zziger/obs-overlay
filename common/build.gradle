@@ -16,4 +16,9 @@ dependencies {
     }
 
     modCompileOnlyApi("maven.modrinth:immediatelyfast:$rootProject.immediatelyfast_version-fabric")
+
+    // JNA is required by the native hook (MinHook on Windows, libMinHook.so on
+    // Linux). Declared explicitly so it does not silently rely on Minecraft's
+    // own transitive JNA (via com.mojang:text2speech).
+    implementation "net.java.dev.jna:jna:$rootProject.jna_version"
 }

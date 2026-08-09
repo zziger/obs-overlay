@@ -32,6 +32,10 @@ bin/
 
 run/
 
+# native hook build output (src/native/linux/build)
+
+src/native/linux/build/
+
 # java
 
 hs_err_*.log
