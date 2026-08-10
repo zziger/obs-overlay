@@ -11,7 +11,7 @@
 ## Installation
 
 This mod is **client-only**.\
-At the moment only **Windows** is supported.
+Supports **Windows** (x64/x86) and **Linux** (x86_64).
 
 ### Dependencies
 
@@ -79,3 +79,8 @@ Check [API documentation](API.md) for more information.
 ## License
 
 [MIT](LICENSE)
+
+The bundled Linux hook (`libMinHook.so` in `src/main/resources/lib`) statically
+links [funchook](https://github.com/kubo/funchook), licensed
+[GPLv2+ with a linking exception](src/native/linux/LICENSE.funchook) that permits
+distribution alongside or within independently-licensed modules.
